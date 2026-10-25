@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
+  Activity,
   ShieldCheck,
   Building2,
   Wallet,
@@ -15,6 +16,7 @@ import {
   Sparkles,
   ExternalLink,
 } from 'lucide-react';
+
 
 interface NavbarProps {
   onStartJudgeTour: () => void;
@@ -41,17 +43,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   const navItems = [
-    { to: '/', label: 'Home', icon: Sparkles },
-    { to: '/verifier', label: 'Verifier', icon: ShieldCheck, highlight: true },
-    { to: '/issuer', label: 'Issuer', icon: Building2 },
-    { to: '/wallet', label: 'Holder Wallet', icon: Wallet },
-    { to: '/playground', label: 'Playground', icon: Skull },
-    { to: '/audit', label: 'Audit', icon: History },
-    { to: '/registry', label: 'Trust Graph', icon: Network },
-    { to: '/incidents', label: 'Incidents', icon: AlertTriangle },
-    { to: '/offline', label: 'Offline PWA', icon: WifiOff },
+    { to: '/', label: 'Consensus Monitor', icon: Activity, highlight: true },
+    { to: '/verifier', label: 'Verifier', icon: ShieldCheck },
+    { to: '/playground', label: 'Fraud Playground', icon: Skull },
+    { to: '/audit', label: 'Audit Explorer', icon: History },
     { to: '/settings', label: 'Settings', icon: Settings },
   ];
+
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-surface-border bg-surface-base/90 backdrop-blur-md transition-colors">

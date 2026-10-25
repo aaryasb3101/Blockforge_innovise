@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { JudgeTourOverlay } from './components/JudgeTourOverlay';
+import { ConsensusMonitoringDashboard } from './pages/ConsensusMonitoringDashboard';
 import { HomePage } from './pages/HomePage';
 import { VerifierPage } from './pages/VerifierPage';
 import { IssuerPage } from './pages/IssuerPage';
@@ -43,10 +44,13 @@ export const App: React.FC = () => {
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
         <Routes>
+          <Route path="/" element={<ConsensusMonitoringDashboard />} />
+          <Route path="/consensus" element={<ConsensusMonitoringDashboard />} />
           <Route
-            path="/"
+            path="/home"
             element={<HomePage onStartJudgeTour={() => setIsJudgeTourOpen(true)} />}
           />
+
           <Route path="/verifier" element={<VerifierPage />} />
           <Route path="/issuer" element={<IssuerPage />} />
           <Route path="/wallet" element={<WalletPage />} />

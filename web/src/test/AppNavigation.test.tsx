@@ -22,10 +22,22 @@ describe('App Routing & Navigation', () => {
     });
   });
 
-  it('renders Home page when path is /', () => {
+  it('renders Consensus Monitoring Dashboard when path is /', () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter initialEntries={['/']}>
+          <App />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    expect(screen.getByText('Consensus & Validator Network Monitor')).toBeInTheDocument();
+  });
+
+  it('renders Home page when path is /home', () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/home']}>
           <App />
         </MemoryRouter>
       </QueryClientProvider>
