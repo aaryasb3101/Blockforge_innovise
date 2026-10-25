@@ -68,6 +68,19 @@ export const VerifierPage: React.FC = () => {
         setRawInput(JSON.stringify(data.valid, null, 2));
       }
     });
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey) {
+        if (e.key === '1') loadSample('valid');
+        else if (e.key === '2') loadSample('tampered');
+        else if (e.key === '3') loadSample('rogue');
+        else if (e.key === '4') loadSample('revoked');
+        else if (e.key === '5') loadSample('expired');
+        else if (e.key === 'Enter') handleVerify();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [searchParams]);
 
   const loadSample = (key: string, sampleData = samples) => {
