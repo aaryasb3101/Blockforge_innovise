@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="brand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg)" />
+  <circle cx="400" cy="180" r="80" fill="none" stroke="url(#brand)" stroke-width="8" />
+  <path d="M370 180 L395 205 L440 155" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="400" y="310" text-anchor="middle" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="32" font-weight="900" letter-spacing="-1">TRUSTMESH</text>
+  <text x="400" y="345" text-anchor="middle" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="16" font-weight="500">Decentralized Institutional Trust Infrastructure</text>
+  <rect x="310" y="370" width="180" height="30" rx="15" fill="#10b98120" stroke="#10b98150" stroke-width="1" />
+  <text x="400" y="390" text-anchor="middle" fill="#10b981" font-family="monospace" font-size="12" font-weight="bold">BLOCKCHAIN VERIFIED ✔</text>
+</svg>
