@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../..');
 
 const envSchema = z.object({
-  PORT: z.coerce.number().default(4000),
+  PORT: z.coerce.number().default(8787),
   HOST: z.string().default('0.0.0.0'),
   MODE: z
     .enum(['local', 'hosted', 'testnet', 'test'])

@@ -2,8 +2,7 @@ import { ethers } from 'ethers';
 import { config } from '../config.js';
 import { chainService } from './chain.js';
 import { keystore } from './keystore.js';
-import { getDb } from '../db/index.js';
-import type { Snapshot } from '../../../shared/types.js';
+import type { Snapshot } from '../../shared/types.js';
 
 export function canonicalize(obj: any): string {
   if (obj === null || typeof obj !== 'object') {

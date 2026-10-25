@@ -37,10 +37,45 @@ async function main() {
   async function getWallet(role: string, id: string): Promise<ethers.Wallet> {
     const filename = `${role}_${id}.json`;
     const filepath = path.join(keystoreDir, filename);
+
+    if (!fs.existsSync(filepath)) {
+      const randomWallet = ethers.Wallet.createRandom();
+      const encrypted = await randomWallet.encrypt(password);
+      fs.writeFileSync(filepath, encrypted, 'utf8');
+
+      const deployer = new ethers.Wallet(
+        process.env.DEPLOYER_KEY || '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+        provider
+      );
+      const tx = await deployer.sendTransaction({
+        to: randomWallet.address,
+        value: ethers.parseEther('1.0'),
+        nonce: await getNextNonce(deployer.address),
+      });
+      await tx.wait(1);
+
+      return randomWallet.connect(provider);
+    }
+
     const json = fs.readFileSync(filepath, 'utf8');
     const w = await ethers.Wallet.fromEncryptedJson(json, password);
-    return w.connect(provider);
+    const connected = w.connect(provider);
+    const bal = await provider.getBalance(connected.address);
+    if (bal < ethers.parseEther('0.1')) {
+      const deployer = new ethers.Wallet(
+        process.env.DEPLOYER_KEY || '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+        provider
+      );
+      const tx = await deployer.sendTransaction({
+        to: connected.address,
+        value: ethers.parseEther('1.0'),
+        nonce: await getNextNonce(deployer.address),
+      });
+      await tx.wait(1);
+    }
+    return connected;
   }
+
 
   const holderAlice = await getWallet('holder', 'alice');
   const holderBob = await getWallet('holder', 'bob');
@@ -71,6 +106,14 @@ async function main() {
   const acmeInstId = ethers.keccak256(ethers.toUtf8Bytes('did:trustmesh:acme-corp'));
 
   const registry = new ethers.Contract(registryAddress, REGISTRY_ABI, provider);
+
+  const nonces: Record<string, number> = {};
+  async function getNextNonce(address: string): Promise<number> {
+    if (nonces[address] === undefined) {
+      nonces[address] = await provider.getTransactionCount(address, 'latest');
+    }
+    return nonces[address]++;
+  }
 
   // Helper to issue + anchor a single credential
   async function createAndAnchor(
@@ -138,7 +181,9 @@ async function main() {
     if (existingAnchor.timestamp === 0n) {
       const schemaHash = ethers.keccak256(ethers.toUtf8Bytes(schema));
       const regWithSigner = registry.connect(issuerWallet) as any;
-      const tx = await regWithSigner.anchorCredential(credentialId, merkleRoot, schemaHash);
+      const tx = await regWithSigner.anchorCredential(credentialId, merkleRoot, schemaHash, {
+        nonce: await getNextNonce(issuerWallet.address),
+      });
       await tx.wait(1);
     }
 
@@ -237,7 +282,9 @@ async function main() {
   const stRev = await registry.getCredentialStatus(revokedCred.id);
   if (stRev.state !== 2) {
     const regAsAdmin = registry.connect(iitbAdmin) as any;
-    const tx = await regAsAdmin.revokeCredential(revokedCred.id, 2); // 2: Fraud
+    const tx = await regAsAdmin.revokeCredential(revokedCred.id, 2, {
+      nonce: await getNextNonce(iitbAdmin.address),
+    }); // 2: Fraud
     await tx.wait(1);
     console.log(`     Revoked on-chain: tx=${tx.hash}`);
   }
@@ -257,7 +304,9 @@ async function main() {
   const stSusp = await registry.getCredentialStatus(suspendedCred.id);
   if (stSusp.state !== 1 && stSusp.state !== 2) {
     const regAsAdmin = registry.connect(iitbAdmin) as any;
-    const tx = await regAsAdmin.suspendCredential(suspendedCred.id);
+    const tx = await regAsAdmin.suspendCredential(suspendedCred.id, {
+      nonce: await getNextNonce(iitbAdmin.address),
+    });
     await tx.wait(1);
     console.log(`     Suspended on-chain: tx=${tx.hash}`);
   }
@@ -368,7 +417,9 @@ async function main() {
   const existingBatch = await registry.getBatch(batchId);
   if (existingBatch.timestamp === 0n) {
     const regWithSigner = registry.connect(iitbKey) as any;
-    const tx = await regWithSigner.anchorBatch(batchId, batchRoot, batchedCreds.length);
+    const tx = await regWithSigner.anchorBatch(batchId, batchRoot, batchedCreds.length, {
+      nonce: await getNextNonce(iitbKey.address),
+    });
     await tx.wait(1);
     console.log(`     Anchored batch of 5: id=${batchId}, tx=${tx.hash}`);
   }
@@ -379,7 +430,9 @@ async function main() {
   if (memberSt.state !== 2) {
     const regWithAdmin = registry.connect(iitbAdmin) as any;
     const proof = batchTree.getHexProof(memberToRevoke.id);
-    const tx = await regWithAdmin.revokeBatchCredential(batchId, memberToRevoke.id, proof, 3); // 3: Error
+    const tx = await regWithAdmin.revokeBatchCredential(batchId, memberToRevoke.id, proof, 3, {
+      nonce: await getNextNonce(iitbAdmin.address),
+    }); // 3: Error
     await tx.wait(1);
     console.log(`     Revoked batch credential ${memberToRevoke.id} with Merkle proof.`);
   }
@@ -389,10 +442,12 @@ async function main() {
   console.log('\n[6/7] Key rotation and key compromise window setup...');
   // Rotate NIT key to fresh key
   const nitKeyInfo = await registry.getKey(nitKey.address);
-  if (nitKeyInfo.status === 1) {
+  if (Number(nitKeyInfo.status) === 1) {
     const freshKey = await getWallet('institution-key', 'nit-trichy-rotated');
     const nitAdminSigner = registry.connect(nitAdmin) as any;
-    const tx = await nitAdminSigner.rotateKey(nitKey.address, freshKey.address);
+    const tx = await nitAdminSigner.rotateKey(nitKey.address, freshKey.address, {
+      nonce: await getNextNonce(nitAdmin.address),
+    });
     await tx.wait(1);
     console.log(`     Rotated NIT key to: ${freshKey.address}`);
   }
@@ -404,8 +459,10 @@ async function main() {
   const bitsAdminSigner = registry.connect(bitsAdmin) as any;
 
   const compKeyInfo = await registry.getKey(compKey.address);
-  if (compKeyInfo.status === 0) {
-    const addTx = await bitsAdminSigner.addKey(bitsInstId, compKey.address);
+  if (Number(compKeyInfo.status) === 0) {
+    const addTx = await bitsAdminSigner.addKey(bitsInstId, compKey.address, {
+      nonce: await getNextNonce(bitsAdmin.address),
+    });
     await addTx.wait(1);
   }
 
@@ -434,9 +491,12 @@ async function main() {
   seededSamples.compromisedAfter = credCompAfter;
 
   const updatedCompKey = await registry.getKey(compKey.address);
-  if (updatedCompKey.status !== 3) {
-    const revKeyTx = await bitsAdminSigner.revokeKey(compKey.address, tCompromise);
+  if (Number(updatedCompKey.status) !== 3) {
+    const revKeyTx = await bitsAdminSigner.revokeKey(compKey.address, tCompromise, {
+      nonce: await getNextNonce(bitsAdmin.address),
+    });
     await revKeyTx.wait(1);
+
     console.log(`     Key revoked with compromisedAt = ${tCompromise}`);
   }
 

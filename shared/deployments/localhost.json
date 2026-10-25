@@ -1,0 +1,105 @@
+{
+  "network": "localhost",
+  "chainId": 31337,
+  "registry": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+  "snapshotPublisher": "0xE4B395a9a59E61a09b30dE4E9EEAFba2309D4f48",
+  "accreditors": [
+    "0xe6C5dB5D36B40f10A3e540C7CDbB924083b4EE35",
+    "0x4BC61C598bF8F2C23eEb9Ba8a36831808A21dd4e",
+    "0x3612d85f988CA3d32e1b11e2BABA56fd3c934794"
+  ],
+  "recoveryDelay": 60,
+  "institutions": [
+    {
+      "id": "0x5b8cf1b311ce863e4e5297e1d58622ebfadca9e3ecf7fa50c3a81fa69f171283",
+      "slug": "iit-bombay",
+      "name": "IIT Bombay",
+      "did": "did:trustmesh:iit-bombay",
+      "type": "university",
+      "admin": "0x6027372Cc978A003A7Dae9E4a16466406082E4e7",
+      "keys": [
+        "0xA3D74918134D893e40176e087C0Cfd1216ed9398"
+      ],
+      "guardians": [
+        "0x710D729Cc2c8f769FA0E6A42aCa9643a87d2C3a5",
+        "0x5c5BB9c8B06D7f707be2d8796B6Fa33B268B03Da",
+        "0x8f86Ec592F126d56E94503411CBA8ad26c072771"
+      ],
+      "threshold": 2
+    },
+    {
+      "id": "0x8c8852e981edcccc9721fb1896e270e30eea7c17f6424c5673dc1cd9501677fb",
+      "slug": "nit-trichy",
+      "name": "NIT Trichy",
+      "did": "did:trustmesh:nit-trichy",
+      "type": "university",
+      "admin": "0x22E189B6E71722a155706a3CaC3D613Cc6E4039b",
+      "keys": [
+        "0x85E5F65b1710D1A0B29D3260bB041B3c2cF82812"
+      ],
+      "guardians": [
+        "0x141ba75259108F4FF472b6266C5D92e6F259D94b",
+        "0xB397dF0D43b970Ae5a847f6FDb37108e46035b61",
+        "0x2Da6e27b60443c53fB9B0083344b4d59d7576d7B"
+      ],
+      "threshold": 2
+    },
+    {
+      "id": "0xb7f213446bd900c7776b3e7bcdd5b94455ac32d46ed944ee07e8d0e66d4b9b10",
+      "slug": "bits-pilani",
+      "name": "BITS Pilani",
+      "did": "did:trustmesh:bits-pilani",
+      "type": "university",
+      "admin": "0x1745d05b8032bD44673bE9590363E407cED4647f",
+      "keys": [
+        "0x61d28580C45C8FC26fBB6a069E0864538bf5C37D"
+      ],
+      "guardians": [
+        "0x111F2dDB028fac73A07Fd2Fb233093fCd18fb4fb",
+        "0x3A3e77A3449220C5fd733f79833aa4dC904B92de",
+        "0x8223C58629f170Da5F5bA5Cb4d687a11B5848233"
+      ],
+      "threshold": 2
+    },
+    {
+      "id": "0xb4f6b6a03b120d4037cafa1608032b9373115e222c098e7a540804b9dda0f092",
+      "slug": "vit-vellore",
+      "name": "VIT Vellore",
+      "did": "did:trustmesh:vit-vellore",
+      "type": "university",
+      "admin": "0x394D329FEbe17f0B861e1C8bF9f1738399906DCf",
+      "keys": [
+        "0xEC9FA11e217158112E5439226Edc77a0cfFDD57e"
+      ],
+      "guardians": [
+        "0xE806CE55bc055a9637A7eA386544B056AEb5052d",
+        "0xa03c3be45e22A72fbcDbc49D3c1E30579efA676B",
+        "0xa75a15EaD69b64426d485784043825FE69885aD5"
+      ],
+      "threshold": 2
+    },
+    {
+      "id": "0x93428bfc2c3b708102fd5c92dc55d3a6c645c3e8db40f7731e3ab67d95a94bda",
+      "slug": "acme-corp",
+      "name": "Acme Corp",
+      "did": "did:trustmesh:acme-corp",
+      "type": "employer",
+      "admin": "0x34405D99F43E64c16502Df81A94F5dbfc81D1162",
+      "keys": [
+        "0xBCA1E5C29eB9760B6E8A42315c04eE2f5dB69311"
+      ],
+      "guardians": [
+        "0xC53C01E6138b2309b040E30ca4E0f97727D4AbcA",
+        "0xfFbF06676fCBd6C8b2A69f503e1354035875388a",
+        "0x4525e288aafB167a42E820aF8444eae245adb386"
+      ],
+      "threshold": 2
+    }
+  ],
+  "rogue": {
+    "did": "did:trustmesh:rogue-academy",
+    "admin": "0xCeAB328D7202c0D88c50AEED827e407Bb986A213",
+    "key": "0x287347c5f49e0C7eE18838Fd944910EEa7603Beb"
+  },
+  "deployedAt": "2026-10-25T08:06:00.919Z"
+}

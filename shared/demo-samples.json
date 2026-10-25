@@ -1,0 +1,235 @@
+{
+  "valid": {
+    "id": "0xe748ff1d22634ae08a410475d66959e240785b018fd7ab3e485d39dd03ae1f47",
+    "schema": "btech-degree-v1",
+    "issuerDid": "did:trustmesh:iit-bombay",
+    "issuerKey": "0xA3D74918134D893e40176e087C0Cfd1216ed9398",
+    "holderDid": "did:pkh:eip155:31337:0xB51798854Cb0918eA3c71B8407F8BaaEF04C42a4",
+    "issuanceDate": 1792915764,
+    "expirationDate": 0,
+    "fields": {
+      "studentName": "Alice Sharma",
+      "degree": "Bachelor of Technology in Computer Science",
+      "cgpa": 9.2,
+      "cgpa_gte_8": true,
+      "graduated": true
+    },
+    "salts": {
+      "cgpa": "0x9640f4d9e86eb769310298c501a2f5dee5f4c4bdfc2932bf0e025e0554fd055b",
+      "cgpa_gte_8": "0xf9a2536e854d4b4ee750e7c2d3852b25813cabe09df4ce54210f1c7798f4a1d8",
+      "degree": "0x8683d94760002067d3406963d407bc486b46f72651a5fa171f3f17b539dc5f5f",
+      "graduated": "0x91f8d3023f1d9cc506ec2258f91dc64c7351841700f29c1ced4daf5e41b4d618",
+      "studentName": "0x569266e82db7d2a0f9e05666778382ebffe2326ba7007cf6b971400496313a5a"
+    },
+    "leaves": {
+      "cgpa": "0x757a76abbbb81da074c6125bd9a0c214fc00c981d5cbe24a483b59ee169c3821",
+      "cgpa_gte_8": "0xc5bec849f0c18d3d0360158e2485849fb73faf9268e011c9076ed82277031edf",
+      "degree": "0x9883b8113fe9f4177e38d9a6b2e8a91536c02631824db4d88021d647768337e9",
+      "graduated": "0x7637ca684164f0211fa610231f61825f00bc058de7849df071443389a41b52ac",
+      "studentName": "0x5e08c27e14063b4e879ad02ed153541d06e306288ec1a58f1c457910ecc47ff7"
+    },
+    "merkleRoot": "0x989acc62a0951ed7d16d17ccefa23a06bcecb86df6ab2038e32ec42aee70e1e5",
+    "signature": "0xe791821fd54e9816b49b7bc0d1025d056a55662405539c369af899c7b893f3a93abecb713f3958537741532443d371aaa30a7c813fa317256d1ab7da55eff0ec1b"
+  },
+  "revoked": {
+    "id": "0x0bbb4cf98f67b58dea21cbc43070a7f4423cd28928b50e3a1a91832e265ed4b5",
+    "schema": "course-completion-v1",
+    "issuerDid": "did:trustmesh:iit-bombay",
+    "issuerKey": "0xA3D74918134D893e40176e087C0Cfd1216ed9398",
+    "holderDid": "did:pkh:eip155:31337:0xA9DfC8f940D39f9329ef990D84e4Feca6f0E6638",
+    "issuanceDate": 1792915765,
+    "expirationDate": 0,
+    "fields": {
+      "course": "Cybersecurity Fundamentals",
+      "forgedHours": true
+    },
+    "salts": {
+      "course": "0x900685e48aaf726fa77023786f5b57e83b4246a9702a048d762f1d7616137cdf",
+      "forgedHours": "0xe00457f1ff05c8bc93d71d1b3beb3d071a1be9d80cd0a059378ad4dd9132ceed"
+    },
+    "leaves": {
+      "course": "0x8d62b30e1c8073319bf61f6fdb256871b7a69aaeef1d098be7f460e8a173de43",
+      "forgedHours": "0x91e7ed71ed57fd934611c6bef2b034957f40050310d8f3968d6d8a75dff7a3e0"
+    },
+    "merkleRoot": "0x7e658db15fbbd88511a1942ae75be62f831fa69400350c85da2e41d6aa0da566",
+    "signature": "0x85c36343d363a8af9203718a5d398f61121c280b13fa639abfc2edec885bcc3470c982e44337df76f8251adcf8b3b205dc3bcb7a2eaacfc1bf39366e937c87171c"
+  },
+  "suspended": {
+    "id": "0xa15a72359200b899e967fc80d87a3450d902ae7d51106adee5f0a4ad17fb4c39",
+    "schema": "library-clearance-v1",
+    "issuerDid": "did:trustmesh:iit-bombay",
+    "issuerKey": "0xA3D74918134D893e40176e087C0Cfd1216ed9398",
+    "holderDid": "did:pkh:eip155:31337:0x76A87c0F320695dF07cc73E790a157BC4D8Dd734",
+    "issuanceDate": 1792915765,
+    "expirationDate": 0,
+    "fields": {
+      "clearanceStatus": "Pending Fee Payment"
+    },
+    "salts": {
+      "clearanceStatus": "0xbb864b653b1d37b4f153e0d6811103e40b09adf9fa3b86ef2bf93be367c1fd03"
+    },
+    "leaves": {
+      "clearanceStatus": "0xeedeccb551a8558e95af9e729803dde6f63858295e4ddd8a8349e3a1716cc791"
+    },
+    "merkleRoot": "0xeedeccb551a8558e95af9e729803dde6f63858295e4ddd8a8349e3a1716cc791",
+    "signature": "0x67b72bd4305110bc3308cb54a46da06138c9038723463b51480d47871e1c00b8548b8455a7150585cc898c94a0784bd81fb3890946373dfa9f3bf818d9c246501c"
+  },
+  "expired": {
+    "id": "0x96ab0d8958fa3c0a592c4e9812f338dcca5be6fe1bc6e7086cd7bd46dfb96475",
+    "schema": "campus-access-pass-v1",
+    "issuerDid": "did:trustmesh:iit-bombay",
+    "issuerKey": "0xA3D74918134D893e40176e087C0Cfd1216ed9398",
+    "holderDid": "did:pkh:eip155:31337:0xB51798854Cb0918eA3c71B8407F8BaaEF04C42a4",
+    "issuanceDate": 1790323764,
+    "expirationDate": 1792742964,
+    "fields": {
+      "passType": "Visitor Student Access"
+    },
+    "salts": {
+      "passType": "0x1d49977f46bdb68c45c1a3642e2f208b4bf9974213f4a5386c58fdb016eaab0a"
+    },
+    "leaves": {
+      "passType": "0x3a45bb0483cbcabcaa9d595a2f2e5b724abad96648659f93266a4c0e4ae84f45"
+    },
+    "merkleRoot": "0x3a45bb0483cbcabcaa9d595a2f2e5b724abad96648659f93266a4c0e4ae84f45",
+    "signature": "0x9b8bdf444c5793ec2feb21d9994ebc62dbb8fd4aa588dc0f7191b158cec23e745838ba41c84fb4ee816534485cf8e8aab1f3fc367136ed5afbfabfb1eb6bb3d41c"
+  },
+  "batch": {
+    "id": "0x3b15872920674daae02e3185b1bac7bdd4c3e2ef26941c57a63f4f23e8faa515",
+    "schema": "batch-diploma-v1",
+    "issuerDid": "did:trustmesh:iit-bombay",
+    "issuerKey": "0xA3D74918134D893e40176e087C0Cfd1216ed9398",
+    "holderDid": "did:pkh:eip155:31337:0xB51798854Cb0918eA3c71B8407F8BaaEF04C42a4",
+    "issuanceDate": 1792915264,
+    "expirationDate": 0,
+    "fields": {
+      "name": "Student 1",
+      "department": "Computer Science",
+      "graduatingClass": 2026
+    },
+    "salts": {
+      "department": "0x064ceaf0f97db9921b01c2b289aeabefd85c7f092b3d78b40d65f646f7192990",
+      "graduatingClass": "0xcf9e33f4a80f1cd5b90e071fe9bd515f0015f4847a72b0ad8a93dee380a3d156",
+      "name": "0x78f1aba5a5dbbc5d402a9305c2ade31d6c809e0fe3a18e28f0f204b5b3b04f14"
+    },
+    "leaves": {
+      "department": "0xff286a5a8c20c925475169045541ec822b5f35456dee8cedb4b27beb6a07c154",
+      "graduatingClass": "0xedb62e945516f8e14dcfb61010ec58a3eec4f26044ebd7f94531d85fb06b6b60",
+      "name": "0x7f34a8342e11e46d2ec31933d90a8ce5c7c539381d51b31aa496deb661a92a7b"
+    },
+    "merkleRoot": "0xf24a941441a21bb46a31182a0ea59f4bede71c503d9d729a8a41d087d26955ae",
+    "signature": "0xd67a355dae8b0c7bbf10cbc72a96333e53042678a15b7bd9d8341b57329745b63ae67393cd1761363ff0d96468e4ec581170ce93b5de17fa4aac4be987aaff621b",
+    "batch": {
+      "batchId": "0xb28bd9433c782f70f19dd58fe67b89a18767a8b35ffd2460d6cb45fc093135dc",
+      "proof": [
+        "0x7ada2a6a5ec2ad64f7070e82827ff129cf570d6df9f8aa10f7c2f4ffe9ae6200",
+        "0x139b5783c86b4623383afcf16a47973effacf7514af1aa14f963253d89311bae",
+        "0x1d57b69bb0ba908dd2be35d3dd0d407d6f48b36eb1334d43e7662d7a032816fc"
+      ]
+    }
+  },
+  "compromisedBefore": {
+    "id": "0x8b2e0cc87969b24a5c3d52cb849e47703a7678c9f29d4285a8c9edeba9e1b6c2",
+    "schema": "lab-safety-certificate-v1",
+    "issuerDid": "did:trustmesh:bits-pilani",
+    "issuerKey": "0xed154fEf8982f3D376D8031011C0820A851e5b7a",
+    "holderDid": "did:pkh:eip155:31337:0xB51798854Cb0918eA3c71B8407F8BaaEF04C42a4",
+    "issuanceDate": 1792913764,
+    "expirationDate": 0,
+    "fields": {
+      "labScore": 98
+    },
+    "salts": {
+      "labScore": "0x15b8ec638924aa54e584faab22a7c452190482725e53bb3843959106f68302ff"
+    },
+    "leaves": {
+      "labScore": "0x7d22d5e0ba9df65c1aaa08658533de6939b72561582ce61cf95341d22b3e00f9"
+    },
+    "merkleRoot": "0x7d22d5e0ba9df65c1aaa08658533de6939b72561582ce61cf95341d22b3e00f9",
+    "signature": "0x44137ff2aeca56d493c9653c2767e1c7c30ca151e26d64d6f2f205fc375852cb2889368beb189190a4b616f33fb685194e0212bdb873b8a474bd64316f08ac471b"
+  },
+  "compromisedAfter": {
+    "id": "0x84f034a24ac638445f6447a7847c10119a4db763fc0cbfff9cd25712c2d9b6f2",
+    "schema": "lab-safety-certificate-v1",
+    "issuerDid": "did:trustmesh:bits-pilani",
+    "issuerKey": "0xed154fEf8982f3D376D8031011C0820A851e5b7a",
+    "holderDid": "did:pkh:eip155:31337:0xA9DfC8f940D39f9329ef990D84e4Feca6f0E6638",
+    "issuanceDate": 1792915664,
+    "expirationDate": 0,
+    "fields": {
+      "labScore": 72
+    },
+    "salts": {
+      "labScore": "0x4ec1bb99c7a8765fd4a3cc37e932a5dace4a4cc657a7ca699c81256e58eddee4"
+    },
+    "leaves": {
+      "labScore": "0x5ee99e451d502bd8873ecfaea5e62145168aabec755dd22d6587b40afefd70fc"
+    },
+    "merkleRoot": "0x5ee99e451d502bd8873ecfaea5e62145168aabec755dd22d6587b40afefd70fc",
+    "signature": "0x1b0f1af48cd5f9f5ec878223d80e971f1a67fcf5da42e0748f4e7ad855016c080d5b00880b57963e8b310d5b12a3695aac280d6817d2def135f37c7a75acd9ac1c"
+  },
+  "tampered": {
+    "id": "0xe748ff1d22634ae08a410475d66959e240785b018fd7ab3e485d39dd03ae1f47",
+    "schema": "btech-degree-v1",
+    "issuerDid": "did:trustmesh:iit-bombay",
+    "issuerKey": "0xA3D74918134D893e40176e087C0Cfd1216ed9398",
+    "holderDid": "did:pkh:eip155:31337:0xB51798854Cb0918eA3c71B8407F8BaaEF04C42a4",
+    "issuanceDate": 1792915764,
+    "expirationDate": 0,
+    "fields": {
+      "studentName": "Alice Sharma",
+      "degree": "Bachelor of Technology in Computer Science",
+      "cgpa": 9.99,
+      "cgpa_gte_8": true,
+      "graduated": true
+    },
+    "salts": {
+      "cgpa": "0x9640f4d9e86eb769310298c501a2f5dee5f4c4bdfc2932bf0e025e0554fd055b",
+      "cgpa_gte_8": "0xf9a2536e854d4b4ee750e7c2d3852b25813cabe09df4ce54210f1c7798f4a1d8",
+      "degree": "0x8683d94760002067d3406963d407bc486b46f72651a5fa171f3f17b539dc5f5f",
+      "graduated": "0x91f8d3023f1d9cc506ec2258f91dc64c7351841700f29c1ced4daf5e41b4d618",
+      "studentName": "0x569266e82db7d2a0f9e05666778382ebffe2326ba7007cf6b971400496313a5a"
+    },
+    "leaves": {
+      "cgpa": "0x757a76abbbb81da074c6125bd9a0c214fc00c981d5cbe24a483b59ee169c3821",
+      "cgpa_gte_8": "0xc5bec849f0c18d3d0360158e2485849fb73faf9268e011c9076ed82277031edf",
+      "degree": "0x9883b8113fe9f4177e38d9a6b2e8a91536c02631824db4d88021d647768337e9",
+      "graduated": "0x7637ca684164f0211fa610231f61825f00bc058de7849df071443389a41b52ac",
+      "studentName": "0x5e08c27e14063b4e879ad02ed153541d06e306288ec1a58f1c457910ecc47ff7"
+    },
+    "merkleRoot": "0x989acc62a0951ed7d16d17ccefa23a06bcecb86df6ab2038e32ec42aee70e1e5",
+    "signature": "0xe791821fd54e9816b49b7bc0d1025d056a55662405539c369af899c7b893f3a93abecb713f3958537741532443d371aaa30a7c813fa317256d1ab7da55eff0ec1b"
+  },
+  "rogue": {
+    "id": "0xe748ff1d22634ae08a410475d66959e240785b018fd7ab3e485d39dd03ae1f47",
+    "schema": "btech-degree-v1",
+    "issuerDid": "did:trustmesh:rogue-academy",
+    "issuerKey": "0x287347c5f49e0C7eE18838Fd944910EEa7603Beb",
+    "holderDid": "did:pkh:eip155:31337:0xB51798854Cb0918eA3c71B8407F8BaaEF04C42a4",
+    "issuanceDate": 1792915764,
+    "expirationDate": 0,
+    "fields": {
+      "studentName": "Alice Sharma",
+      "degree": "Bachelor of Technology in Computer Science",
+      "cgpa": 9.2,
+      "cgpa_gte_8": true,
+      "graduated": true
+    },
+    "salts": {
+      "cgpa": "0x9640f4d9e86eb769310298c501a2f5dee5f4c4bdfc2932bf0e025e0554fd055b",
+      "cgpa_gte_8": "0xf9a2536e854d4b4ee750e7c2d3852b25813cabe09df4ce54210f1c7798f4a1d8",
+      "degree": "0x8683d94760002067d3406963d407bc486b46f72651a5fa171f3f17b539dc5f5f",
+      "graduated": "0x91f8d3023f1d9cc506ec2258f91dc64c7351841700f29c1ced4daf5e41b4d618",
+      "studentName": "0x569266e82db7d2a0f9e05666778382ebffe2326ba7007cf6b971400496313a5a"
+    },
+    "leaves": {
+      "cgpa": "0x757a76abbbb81da074c6125bd9a0c214fc00c981d5cbe24a483b59ee169c3821",
+      "cgpa_gte_8": "0xc5bec849f0c18d3d0360158e2485849fb73faf9268e011c9076ed82277031edf",
+      "degree": "0x9883b8113fe9f4177e38d9a6b2e8a91536c02631824db4d88021d647768337e9",
+      "graduated": "0x7637ca684164f0211fa610231f61825f00bc058de7849df071443389a41b52ac",
+      "studentName": "0x5e08c27e14063b4e879ad02ed153541d06e306288ec1a58f1c457910ecc47ff7"
+    },
+    "merkleRoot": "0x989acc62a0951ed7d16d17ccefa23a06bcecb86df6ab2038e32ec42aee70e1e5",
+    "signature": "0xe791821fd54e9816b49b7bc0d1025d056a55662405539c369af899c7b893f3a93abecb713f3958537741532443d371aaa30a7c813fa317256d1ab7da55eff0ec1b"
+  }
+}

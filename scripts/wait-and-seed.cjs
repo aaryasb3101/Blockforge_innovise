@@ -50,7 +50,11 @@ async function main() {
   } catch (err) {
     console.warn('[orchestrator] Note: Seeding may succeed after core lands:', err.message);
   }
+
+  // Keep alive so concurrently doesn't trigger shutdown if -k is set
+  setInterval(() => {}, 60000);
 }
+
 
 main().catch((err) => {
   console.error('[orchestrator] Error:', err);

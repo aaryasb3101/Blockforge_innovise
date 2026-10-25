@@ -61,6 +61,14 @@ async function main() {
   const isLocal = networkName === 'localhost' || networkName === 'hardhat' || chainId === 31337;
   const fundAmount = isLocal ? ethers.parseEther('1.0') : ethers.parseEther('0.005');
 
+  const nonces: Record<string, number> = {};
+  async function getNextNonce(address: string): Promise<number> {
+    if (nonces[address] === undefined) {
+      nonces[address] = await provider.getTransactionCount(address, 'latest');
+    }
+    return nonces[address]++;
+  }
+
   async function getOrCreateWallet(role: string, id: string): Promise<ethers.Wallet> {
     const filename = `${role}_${id}.json`;
     const filepath = path.join(keystoreDir, filename);
@@ -68,7 +76,17 @@ async function main() {
     if (fs.existsSync(filepath)) {
       const json = fs.readFileSync(filepath, 'utf8');
       const w = await ethers.Wallet.fromEncryptedJson(json, keystorePassword);
-      return w.connect(provider);
+      const connected = w.connect(provider);
+      const bal = await provider.getBalance(connected.address);
+      if (bal < fundAmount / 2n) {
+        const tx = await deployer.sendTransaction({
+          to: connected.address,
+          value: fundAmount,
+          nonce: await getNextNonce(deployer.address),
+        });
+        await tx.wait(1);
+      }
+      return connected;
     }
 
     const randomWallet = ethers.Wallet.createRandom();
@@ -79,6 +97,7 @@ async function main() {
     const tx = await deployer.sendTransaction({
       to: randomWallet.address,
       value: fundAmount,
+      nonce: await getNextNonce(deployer.address),
     });
     await tx.wait(1);
 
@@ -130,14 +149,18 @@ async function main() {
     accreditorWallets[2].address,
   ];
 
-  const registryContract = await factory.deploy(accreditorAddrs, recoveryDelay);
+  const registryContract = await factory.deploy(accreditorAddrs, recoveryDelay, {
+    nonce: await getNextNonce(deployer.address),
+  });
   await registryContract.waitForDeployment();
   const registryAddress = await registryContract.getAddress();
   console.log(`  TrustRegistry deployed to: ${registryAddress}`);
 
   // Set snapshot publisher
   const registryAsAccreditor0 = new ethers.Contract(registryAddress, REGISTRY_ABI, accreditorWallets[0]);
-  const pubTx = await registryAsAccreditor0.setSnapshotPublisher(publisherWallet.address);
+  const pubTx = await registryAsAccreditor0.setSnapshotPublisher(publisherWallet.address, {
+    nonce: await getNextNonce(accreditorWallets[0].address),
+  });
   await pubTx.wait(1);
   console.log(`  Snapshot publisher configured on-chain.`);
 
@@ -162,29 +185,41 @@ async function main() {
     const nameHash = ethers.keccak256(ethers.toUtf8Bytes(inst.name));
 
     // Register institution
-    const regTx = await registryContract.registerInstitution(inst.did, nameHash, adminWallet.address);
+    const regTx = await registryContract.registerInstitution(inst.did, nameHash, adminWallet.address, {
+      nonce: await getNextNonce(deployer.address),
+    });
     await regTx.wait(1);
 
     // Accreditor 1 approves
-    const app1Tx = await registryAsAccreditor0.approveInstitution(instId);
+    const app1Tx = await registryAsAccreditor0.approveInstitution(instId, {
+      nonce: await getNextNonce(accreditorWallets[0].address),
+    });
     await app1Tx.wait(1);
 
     // Accreditor 2 approves -> becomes Active
-    const app2Tx = await registryAsAccreditor1.approveInstitution(instId);
+    const app2Tx = await registryAsAccreditor1.approveInstitution(instId, {
+      nonce: await getNextNonce(accreditorWallets[1].address),
+    });
     await app2Tx.wait(1);
 
     // Admin adds active key
     const registryAsAdmin = new ethers.Contract(registryAddress, REGISTRY_ABI, adminWallet);
-    const addKeyTx = await registryAsAdmin.addKey(instId, keyWallet.address);
+    const addKeyTx = await registryAsAdmin.addKey(instId, keyWallet.address, {
+      nonce: await getNextNonce(adminWallet.address),
+    });
     await addKeyTx.wait(1);
 
     // Admin sets guardians (3 guardians, threshold 2)
     const setGTx = await registryAsAdmin.setGuardians(
       instId,
       gWallets.map((w) => w.address),
-      2
+      2,
+      {
+        nonce: await getNextNonce(adminWallet.address),
+      }
     );
     await setGTx.wait(1);
+
 
     console.log(`      ID: ${instId}`);
     console.log(`      Admin: ${adminWallet.address}`);
