@@ -1,0 +1,54 @@
+name: TrustMesh CI Pipeline
+
+on:
+  push:
+    branches: [main, feat/*]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-verify:
+    name: Build, Test & Security Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install All Sub-Packages
+        run: npm run install:all
+
+      - name: Contracts Tests & Coverage (>95%)
+        run: npm --prefix contracts run coverage
+
+      - name: Backend REST API Tests
+        run: npm --prefix backend test
+
+      - name: Core Public API Tests (if present)
+        run: npm run test:core
+
+      - name: Build Backend Bundle
+        run: npm run build:backend
+
+      - name: Build Web Application (if present)
+        run: npm run build:web
+
+      - name: Start Hardhat Node & Run E2E Security Attacks
+        run: |
+          npx --prefix contracts hardhat node --hostname 127.0.0.1 &
+          NODE_PID=$!
+          echo "Waiting for local node to accept RPC connections..."
+          until curl -s -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' http://127.0.0.1:8545 > /dev/null; do
+            sleep 1
+          done
+          echo "Node is ready! Deploying and bootstrapping institutions..."
+          npm --prefix scripts run deploy
+          echo "Running 4 Must-Demo scenarios and 18 core attacks..."
+          npm run demo:attacks
+          kill $NODE_PID
