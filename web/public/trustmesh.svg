@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="45" stroke="url(#g)" stroke-width="6" stroke-dasharray="10 5" opacity="0.4" />
+  <polygon points="50,15 85,75 15,75" stroke="url(#g)" stroke-width="7" stroke-linejoin="round" fill="none" />
+  <circle cx="50" cy="15" r="7" fill="#06b6d4" />
+  <circle cx="85" cy="75" r="7" fill="#3b82f6" />
+  <circle cx="15" cy="75" r="7" fill="#10b981" />
+  <circle cx="50" cy="52" r="9" fill="url(#g)" />
+</svg>
