@@ -23,6 +23,8 @@ interface NavbarProps {
   isOffline?: boolean;
 }
 
+import { fetchHealth } from '../lib/api';
+
 export const Navbar: React.FC<NavbarProps> = ({
   onStartJudgeTour,
   theme,
@@ -30,6 +32,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   isOffline,
 }) => {
   const navigate = useNavigate();
+  const [chainBlock, setChainBlock] = React.useState<number>(12480);
+
+  React.useEffect(() => {
+    fetchHealth().then((h) => {
+      if (h.block) setChainBlock(h.block);
+    });
+  }, []);
 
   const navItems = [
     { to: '/', label: 'Home', icon: Sparkles },
@@ -112,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 isOffline ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'
               }`}
             />
-            <span>{isOffline ? 'OFFLINE SNAPSHOT' : 'CHAIN: 31337'}</span>
+            <span>{isOffline ? 'OFFLINE SNAPSHOT' : `CHAIN: 31337 (#${chainBlock})`}</span>
           </div>
 
           {/* Judge Tour Button */}
