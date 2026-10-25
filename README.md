@@ -181,7 +181,10 @@ Refer to [`infra/DEPLOY.md`](file:///c:/Users/APURVA/OneDrive/Documents/Desktop/
 ## 7. Comprehensive Documentation Links
 
 - [System Architecture Specification](file:///c:/Users/APURVA/OneDrive/Documents/Desktop/BlockForge/docs/ARCHITECTURE.md)
+- [REST API & Core SDK Reference](file:///c:/Users/APURVA/OneDrive/Documents/Desktop/BlockForge/docs/API.md)
 - [Threat Model & 18 Attack Matrix](file:///c:/Users/APURVA/OneDrive/Documents/Desktop/BlockForge/docs/THREAT_MODEL.md)
+- [Troubleshooting & Judge FAQ](file:///c:/Users/APURVA/OneDrive/Documents/Desktop/BlockForge/docs/TROUBLESHOOTING.md)
 - [5-Minute Judge Demo Script](file:///c:/Users/APURVA/OneDrive/Documents/Desktop/BlockForge/docs/DEMO_SCRIPT.md)
 - [Pitch Deck & Likely Judge Q&A](file:///c:/Users/APURVA/OneDrive/Documents/Desktop/BlockForge/docs/PITCH.md)
 - [Screenshots & UI Manifest](file:///c:/Users/APURVA/OneDrive/Documents/Desktop/BlockForge/docs/SCREENSHOTS.md)
+
