@@ -61,9 +61,11 @@ export async function computeBlastRadius(
     const credEvents = await contract.queryFilter(credFilter);
 
     for (const ev of credEvents) {
-      const credId = ev.args[0];
-      const block = await ev.getBlock();
-      const timestamp = Number(block.timestamp);
+      const anyEv = ev as any;
+      if (!anyEv.args) continue;
+      const credId = anyEv.args[0];
+      const block = anyEv.getBlock ? await anyEv.getBlock() : await provider.getBlock(ev.blockNumber);
+      const timestamp = Number(block?.timestamp ?? 0);
 
       // Check if anchored after key revocation was executed on-chain
       if (
@@ -96,9 +98,11 @@ export async function computeBlastRadius(
     const batchEvents = await contract.queryFilter(batchFilter);
 
     for (const ev of batchEvents) {
-      const batchId = ev.args[0];
-      const block = await ev.getBlock();
-      const timestamp = Number(block.timestamp);
+      const anyEv = ev as any;
+      if (!anyEv.args) continue;
+      const batchId = anyEv.args[0];
+      const block = anyEv.getBlock ? await anyEv.getBlock() : await provider.getBlock(ev.blockNumber);
+      const timestamp = Number(block?.timestamp ?? 0);
 
       if (
         keyStatus === 3 &&

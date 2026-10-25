@@ -1,6 +1,5 @@
 import canonicalize from 'canonicalize';
 import {
-  getBytes,
   hexlify,
   keccak256,
   randomBytes,

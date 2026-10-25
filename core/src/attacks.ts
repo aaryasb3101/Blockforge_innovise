@@ -138,7 +138,7 @@ export const ATTACKS: Attack[] = [
     description: 'Attacker modifies a single field (cgpa: 9.0 -> 9.9) without re-signing',
     expectedRule: 'R2',
     async run(ctx: AttackContext): Promise<AttackOutcome> {
-      const { did, admin, key, client, source } = await setupThrowaway(ctx);
+      const { did, key, client, source } = await setupThrowaway(ctx);
       const holder = await ctx.newFundedWallet();
       const cred = await issueCredential({
         issuerWallet: key,

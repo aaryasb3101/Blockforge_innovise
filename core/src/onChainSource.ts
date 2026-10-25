@@ -7,9 +7,9 @@ import { REGISTRY_ABI } from './abi.js';
 import { TrustSource } from './types.js';
 
 export class OnChainSource implements TrustSource {
-  private contract: Contract;
-  private provider: Provider;
-  private registryAddress: string;
+  public contract: Contract;
+  public provider: Provider;
+  public registryAddress: string;
 
   // Simple block-aware caches to be gentle with the RPC
   private institutionCache = new Map<string, { block: number; data: any }>();

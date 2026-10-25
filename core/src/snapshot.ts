@@ -111,17 +111,19 @@ export async function buildSnapshot(
     const anchorFilter = contract.filters.CredentialAnchored();
     const anchorEvents = await contract.queryFilter(anchorFilter);
     for (const event of anchorEvents) {
-      const credId = event.args[0];
-      const instId = event.args[1];
-      const keyAddr = event.args[2];
-      const merkleRoot = event.args[3];
-      const evBlock = await event.getBlock();
+      const ev = event as any;
+      if (!ev.args) continue;
+      const credId = ev.args[0];
+      const instId = ev.args[1];
+      const keyAddr = ev.args[2];
+      const merkleRoot = ev.args[3];
+      const evBlock = ev.getBlock ? await ev.getBlock() : await provider.getBlock(ev.blockNumber);
       anchors.push({
         credentialId: credId,
         institutionId: instId,
         keyAddr,
         merkleRoot,
-        timestamp: Number(evBlock.timestamp),
+        timestamp: Number(evBlock?.timestamp ?? 0),
         blockNumber: event.blockNumber,
         txHash: event.transactionHash,
       });
@@ -136,19 +138,21 @@ export async function buildSnapshot(
     const batchFilter = contract.filters.BatchAnchored();
     const batchEvents = await contract.queryFilter(batchFilter);
     for (const event of batchEvents) {
-      const batchId = event.args[0];
-      const instId = event.args[1];
-      const keyAddr = event.args[2];
-      const batchRoot = event.args[3];
-      const count = Number(event.args[4]);
-      const evBlock = await event.getBlock();
+      const ev = event as any;
+      if (!ev.args) continue;
+      const batchId = ev.args[0];
+      const instId = ev.args[1];
+      const keyAddr = ev.args[2];
+      const batchRoot = ev.args[3];
+      const count = Number(ev.args[4]);
+      const evBlock = ev.getBlock ? await ev.getBlock() : await provider.getBlock(ev.blockNumber);
       batches.push({
         batchId,
         institutionId: instId,
         keyAddr,
         batchRoot,
         count,
-        timestamp: Number(evBlock.timestamp),
+        timestamp: Number(evBlock?.timestamp ?? 0),
         blockNumber: event.blockNumber,
         txHash: event.transactionHash,
       });
@@ -163,15 +167,17 @@ export async function buildSnapshot(
     const statusFilter = contract.filters.CredentialStatusChanged();
     const statusEvents = await contract.queryFilter(statusFilter);
     for (const event of statusEvents) {
-      const credId = event.args[0];
-      const state = Number(event.args[2]);
-      const reasonCode = Number(event.args[3]);
-      const evBlock = await event.getBlock();
+      const ev = event as any;
+      if (!ev.args) continue;
+      const credId = ev.args[0];
+      const state = Number(ev.args[2]);
+      const reasonCode = Number(ev.args[3]);
+      const evBlock = ev.getBlock ? await ev.getBlock() : await provider.getBlock(ev.blockNumber);
       statuses.push({
         credentialId: credId,
         state,
         reasonCode,
-        timestamp: Number(evBlock.timestamp),
+        timestamp: Number(evBlock?.timestamp ?? 0),
         txHash: event.transactionHash,
       });
     }
