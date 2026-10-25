@@ -58,3 +58,21 @@
 .animate-pulse-slow {
   animation: pulse-slow 3s ease-in-out infinite;
 }
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  header, nav, footer, button, .no-print {
+    display: none !important;
+  }
+
+  #printable-receipt {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
