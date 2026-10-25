@@ -1,0 +1,51 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: trustmesh-backend
+    env: docker
+    dockerfilePath: ./infra/Dockerfile.backend
+    dockerContext: .
+    plan: standard
+    region: oregon
+    healthCheckPath: /api/health
+    disk:
+      name: trustmesh-backend-disk
+      mountPath: /app/backend/data
+      sizeGB: 10
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: HOST
+        value: 0.0.0.0
+      - key: MODE
+        value: hosted
+      - key: RPC_URL
+        sync: false
+      - key: CHAIN_ID
+        value: 31337
+      - key: REGISTRY_ADDRESS
+        sync: false
+      - key: KEYSTORE_PASSWORD
+        generateValue: true
+      - key: KEYSTORE_DIR
+        value: /app/backend/data/keystore
+      - key: DB_PATH
+        value: /app/backend/data/trustmesh.db
+      - key: CORS_ORIGIN
+        value: '*'
+      - key: DEMO_MODE
+        value: 'true'
+
+  # Optional Hosted Hardhat Node Service
+  - type: web
+    name: trustmesh-chain
+    env: docker
+    dockerfilePath: ./infra/Dockerfile.chain
+    dockerContext: .
+    plan: standard
+    region: oregon
+    envVars:
+      - key: NETWORK
+        value: localhost
+      - key: RPC_URL
+        value: http://127.0.0.1:8545
