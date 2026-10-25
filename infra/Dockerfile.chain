@@ -1,0 +1,62 @@
+# Dockerfile for Hosted Hardhat Chain with Deploy-on-Boot
+FROM node:20-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy package descriptors
+COPY contracts/package*.json ./contracts/
+COPY shared/package*.json ./shared/
+COPY scripts/package*.json ./scripts/
+
+# Install dependencies
+RUN npm --prefix shared install
+RUN npm --prefix contracts install
+RUN npm --prefix scripts install
+
+# Copy sources
+COPY contracts ./contracts
+COPY shared ./shared
+COPY scripts ./scripts
+
+# Compile contracts
+RUN npm --prefix contracts run compile
+
+# Create keystore directory
+RUN mkdir -p /app/backend/keystore
+
+EXPOSE 8545
+
+# Entrypoint script that starts hardhat node in background, waits for RPC, deploys & seeds, then waits on node
+COPY <<-"EOF" /app/entrypoint.sh
+#!/bin/bash
+set -e
+
+echo "[Chain Container] Starting Hardhat node..."
+npx --prefix contracts hardhat node --hostname 0.0.0.0 &
+NODE_PID=$!
+
+echo "[Chain Container] Waiting for node RPC on http://127.0.0.1:8545..."
+until curl -s -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' http://127.0.0.1:8545 > /dev/null; do
+  sleep 1
+done
+
+echo "[Chain Container] Hardhat node is ready! Deploying registry and institutions..."
+npm --prefix scripts run deploy
+
+echo "[Chain Container] Seeding sample credentials..."
+npm --prefix scripts run seed || echo "[Chain Container] Note: Core seeding standing by."
+
+echo "[Chain Container] Blockchain node and initial bootstrap complete!"
+wait $NODE_PID
+EOF
+
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]

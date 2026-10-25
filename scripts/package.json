@@ -1,0 +1,21 @@
+{
+  "name": "@trustmesh/scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "tsx deploy.ts",
+    "deploy:testnet": "tsx deploy.ts --network testnet",
+    "seed": "tsx seed-credentials.ts",
+    "demo:attacks": "tsx demo-attacks.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  }
+}

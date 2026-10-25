@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  chain:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.chain
+    container_name: trustmesh-chain
+    ports:
+      - '8545:8545'
+    environment:
+      - NETWORK=localhost
+      - RPC_URL=http://127.0.0.1:8545
+      - KEYSTORE_DIR=/app/backend/keystore
+    volumes:
+      - keystore-data:/app/backend/keystore
+      - deployments-data:/app/shared/deployments
+    networks:
+      - trustmesh-net
+    healthcheck:
+      test: ['CMD', 'curl', '-f', '-X', 'POST', '-H', 'Content-Type: application/json', '--data', '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}', 'http://127.0.0.1:8545']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.backend
+    container_name: trustmesh-backend
+    ports:
+      - '4000:4000'
+    depends_on:
+      chain:
+        condition: service_healthy
+    environment:
+      - PORT=4000
+      - HOST=0.0.0.0
+      - MODE=local
+      - RPC_URL=http://chain:8545
+      - CHAIN_ID=31337
+      - KEYSTORE_PASSWORD=trustmesh-secret-key-password-2026
+      - KEYSTORE_DIR=/app/backend/keystore
+      - DB_PATH=/app/backend/data/trustmesh.db
+      - CORS_ORIGIN=*
+      - DEMO_MODE=true
+    volumes:
+      - backend-db:/app/backend/data
+      - keystore-data:/app/backend/keystore
+      - deployments-data:/app/shared/deployments
+    networks:
+      - trustmesh-net
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4000/api/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: nginx:alpine
+    container_name: trustmesh-web
+    ports:
+      - '3000:80'
+    volumes:
+      - ../web/dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    networks:
+      - trustmesh-net
+
+networks:
+  trustmesh-net:
+    driver: bridge
+
+volumes:
+  backend-db:
+  keystore-data:
+  deployments-data:
