@@ -16,13 +16,14 @@ import {
   History,
   FileCheck,
   ExternalLink,
+  Activity,
 } from 'lucide-react';
 
 interface HomePageProps {
-  onStartJudgeTour: () => void;
+  onStartJudgeTour?: () => void;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ onStartJudgeTour }) => {
+export const HomePage: React.FC<HomePageProps> = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState<Record<string, number>>({
     institutions: 3,
@@ -99,7 +100,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onStartJudgeTour }) => {
       <div className="relative overflow-hidden rounded-3xl border border-surface-border bg-gradient-to-b from-surface-card to-surface-base p-8 sm:p-12 lg:p-16 text-center space-y-6 shadow-2xl">
         <div className="inline-flex items-center space-x-2 rounded-full bg-brand-500/10 px-4 py-1.5 text-xs font-mono font-bold text-brand-400 border border-brand-500/20">
           <Sparkles className="h-3.5 w-3.5" />
-          <span>Hackathon Finalist • TrustMesh Decentralized Architecture</span>
+          <span>CredLedger • Decentralized Trust & Consensus Architecture</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-surface-text max-w-4xl mx-auto leading-tight">
@@ -119,11 +120,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onStartJudgeTour }) => {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
           <button
-            onClick={onStartJudgeTour}
-            className="w-full sm:w-auto flex items-center justify-center space-x-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 px-8 py-4 text-sm font-black text-white shadow-xl shadow-orange-500/25 hover:scale-105 active:scale-95 transition-all"
+            onClick={() => navigate('/')}
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 rounded-2xl bg-gradient-to-r from-brand-500 to-emerald-500 px-8 py-4 text-sm font-black text-white shadow-xl shadow-brand-500/25 hover:scale-105 active:scale-95 transition-all"
           >
-            <Sparkles className="h-4 w-4 fill-current" />
-            <span>Launch 5-Minute Judge Tour</span>
+            <Activity className="h-4 w-4" />
+            <span>Open Consensus Monitor</span>
           </button>
 
           <button

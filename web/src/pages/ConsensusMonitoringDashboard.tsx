@@ -441,14 +441,14 @@ export const ConsensusMonitoringDashboard: React.FC = () => {
             <div className="flex items-center gap-3">
               <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                Live Consensus & Validator Network Prototype
+                CredLedger • Live Consensus & Validator Network Prototype
               </span>
               <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-xs font-semibold text-slate-300">
                 BFT Quorum: 3-of-4 (75%)
               </span>
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-              Consensus & Validator Network Monitor
+              CredLedger Consensus & Validator Monitor
             </h1>
             <p className="max-w-2xl text-sm text-slate-400">
               Real multi-node cryptographic consensus prototype. Processes synthetic transactions, broadcasts ECDSA PreVotes & PreCommits, simulates P2P failures, and continuously verifies cross-validator ledger consistency.

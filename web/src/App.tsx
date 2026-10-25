@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
-import { JudgeTourOverlay } from './components/JudgeTourOverlay';
 import { ConsensusMonitoringDashboard } from './pages/ConsensusMonitoringDashboard';
 import { HomePage } from './pages/HomePage';
 import { VerifierPage } from './pages/VerifierPage';
@@ -17,7 +16,6 @@ import { Toaster } from 'react-hot-toast';
 
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
-  const [isJudgeTourOpen, setIsJudgeTourOpen] = useState<boolean>(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -29,14 +27,9 @@ export const App: React.FC = () => {
     }
   }, [theme]);
 
-  const handleExecuteDemoStep = (stepIndex: number) => {
-    // Additional execution hooks if necessary
-  };
-
   return (
     <div className="min-h-screen bg-surface-base text-surface-text font-sans selection:bg-brand-500 selection:text-white transition-colors duration-200">
       <Navbar
-        onStartJudgeTour={() => setIsJudgeTourOpen(true)}
         theme={theme}
         setTheme={setTheme}
         isOffline={location.pathname === '/offline'}
@@ -46,10 +39,7 @@ export const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<ConsensusMonitoringDashboard />} />
           <Route path="/consensus" element={<ConsensusMonitoringDashboard />} />
-          <Route
-            path="/home"
-            element={<HomePage onStartJudgeTour={() => setIsJudgeTourOpen(true)} />}
-          />
+          <Route path="/home" element={<HomePage />} />
 
           <Route path="/verifier" element={<VerifierPage />} />
           <Route path="/issuer" element={<IssuerPage />} />
@@ -65,12 +55,6 @@ export const App: React.FC = () => {
           />
         </Routes>
       </main>
-
-      <JudgeTourOverlay
-        isOpen={isJudgeTourOpen}
-        onClose={() => setIsJudgeTourOpen(false)}
-        onExecuteDemoStep={handleExecuteDemoStep}
-      />
 
       <Toaster
         position="bottom-right"

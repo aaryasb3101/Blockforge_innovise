@@ -19,7 +19,6 @@ import {
 
 
 interface NavbarProps {
-  onStartJudgeTour: () => void;
   theme: 'dark' | 'light';
   setTheme: (t: 'dark' | 'light') => void;
   isOffline?: boolean;
@@ -28,7 +27,6 @@ interface NavbarProps {
 import { fetchHealth } from '../lib/api';
 
 export const Navbar: React.FC<NavbarProps> = ({
-  onStartJudgeTour,
   theme,
   setTheme,
   isOffline,
@@ -67,14 +65,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div>
             <div className="flex items-center space-x-1.5">
               <span className="text-xl font-black tracking-tight text-surface-text">
-                TRUST<span className="text-brand-400">MESH</span>
+                CRED<span className="text-brand-400">LEDGER</span>
               </span>
               <span className="rounded-full bg-brand-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-brand-400 border border-brand-500/20">
                 v1.0
               </span>
             </div>
             <p className="text-[10px] font-medium text-surface-muted hidden sm:block">
-              Decentralized Institutional Trust Infrastructure
+              Decentralized Trust & Consensus Infrastructure
             </p>
           </div>
         </div>
@@ -91,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   `flex items-center space-x-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
                     isActive
                       ? item.highlight
-                        ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
+                         ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
                         : 'bg-surface-elevated text-brand-400 border border-surface-border'
                       : 'text-surface-muted hover:bg-surface-elevated hover:text-surface-text'
                   }`
@@ -121,15 +119,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
             <span>{isOffline ? 'OFFLINE SNAPSHOT' : `CHAIN: 31337 (#${chainBlock})`}</span>
           </div>
-
-          {/* Judge Tour Button */}
-          <button
-            onClick={onStartJudgeTour}
-            className="flex items-center space-x-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-1.5 text-xs font-bold text-white shadow-lg shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all animate-pulse"
-          >
-            <Sparkles className="h-3.5 w-3.5 fill-current" />
-            <span>Judge Tour (5m)</span>
-          </button>
 
           {/* Theme Toggle */}
           <button

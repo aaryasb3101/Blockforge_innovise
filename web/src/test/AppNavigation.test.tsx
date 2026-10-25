@@ -31,7 +31,7 @@ describe('App Routing & Navigation', () => {
       </QueryClientProvider>
     );
 
-    expect(screen.getByText('Consensus & Validator Network Monitor')).toBeInTheDocument();
+    expect(screen.getByText('CredLedger Consensus & Validator Monitor')).toBeInTheDocument();
   });
 
   it('renders Home page when path is /home', () => {
@@ -44,7 +44,7 @@ describe('App Routing & Navigation', () => {
     );
 
     expect(screen.getByText('Trust, Decentralized.')).toBeInTheDocument();
-    expect(screen.getByText('Launch 5-Minute Judge Tour')).toBeInTheDocument();
+    expect(screen.getByText('Open Consensus Monitor')).toBeInTheDocument();
   });
 
   it('renders Decentralized Verifier when path is /verifier', () => {
