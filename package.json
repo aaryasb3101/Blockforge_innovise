@@ -1,0 +1,26 @@
+{
+  "name": "trustmesh",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TrustMesh - Decentralized Institutional Trust Infrastructure",
+  "scripts": {
+    "install:all": "node scripts/install-all.cjs",
+    "chain": "npm --prefix contracts run node",
+    "deploy": "npm --prefix scripts run deploy",
+    "deploy:testnet": "npm --prefix scripts run deploy:testnet",
+    "seed": "npm --prefix scripts run seed",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"chain,seed,backend,web\" -c \"yellow,cyan,blue,magenta\" \"npm run chain\" \"node scripts/wait-and-seed.cjs\" \"npm --prefix backend run dev\" \"node scripts/run-web-if-present.cjs\"",
+    "test:contracts": "npm --prefix contracts test",
+    "test:backend": "npm --prefix backend test",
+    "test:core": "node -e \"if(require('fs').existsSync('core/package.json')) require('child_process').execSync('npm --prefix core test', {stdio:'inherit'}); else console.log('core not landed yet')\"",
+    "test": "npm run test:contracts && npm run test:backend && npm run test:core",
+    "build:backend": "npm --prefix backend run build",
+    "build:web": "node -e \"if(require('fs').existsSync('web/package.json')) require('child_process').execSync('npm --prefix web run build', {stdio:'inherit'}); else console.log('web not landed yet')\"",
+    "build": "npm run build:backend && npm run build:web",
+    "demo:attacks": "npm --prefix scripts run demo:attacks",
+    "docker:up": "docker compose -f infra/docker-compose.yml up --build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
