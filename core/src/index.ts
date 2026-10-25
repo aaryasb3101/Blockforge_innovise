@@ -1,6 +1,9 @@
 // Enums & Types
 export * from './types.js';
 
+// Constants & Spec Metadata
+export * from './constants.js';
+
 // Human-readable ABI
 export * from './abi.js';
 
