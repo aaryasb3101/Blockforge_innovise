@@ -1,1 +1,1 @@
-export * from './_tmp_abi.js';
+export * from '../../shared/abi.js';
