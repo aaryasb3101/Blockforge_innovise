@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Credential, RuleEvaluation, RuleStatus } from '@shared/types';
+import { Credential, RuleResult } from '@shared/types';
 import { keccak256, toUtf8Bytes } from 'ethers';
 import canonicalize from 'canonicalize';
 import {
@@ -7,15 +7,13 @@ import {
   CheckCircle2,
   Copy,
   Check,
-  Search,
-  Eye,
   FileQuestion,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface ForensicsTableProps {
   credential?: Credential | any;
-  rules?: RuleEvaluation[];
+  rules?: RuleResult[];
 }
 
 export const ForensicsTable: React.FC<ForensicsTableProps> = ({
@@ -36,12 +34,12 @@ export const ForensicsTable: React.FC<ForensicsTableProps> = ({
   }
 
   const fields = credential.fields || {};
-  const salts = credential.fieldSalts || {};
+  const salts = credential.salts || credential.fieldSalts || {};
   const fieldEntries = Object.entries(fields);
 
   // Check if R5 (Merkle tree integrity) failed or warned
-  const r5Rule = rules.find((r) => r.ruleId === 'R5_MERKLE');
-  const isMerkleFailed = r5Rule && r5Rule.status === RuleStatus.FAIL;
+  const r5Rule = rules.find((r) => r.id === 'R5');
+  const isMerkleFailed = r5Rule && (r5Rule.status === 'fail' || r5Rule.status === 'warn');
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -81,7 +79,7 @@ export const ForensicsTable: React.FC<ForensicsTableProps> = ({
         </div>
 
         <div className="text-xs font-mono text-surface-muted bg-surface-base px-3 py-1.5 rounded-lg border border-surface-border self-start sm:self-auto">
-          Root: {credential.merkleProof?.root?.slice(0, 14)}...
+          Root: {(credential.merkleRoot || credential.merkleProof?.root || '').slice(0, 14)}...
         </div>
       </div>
 

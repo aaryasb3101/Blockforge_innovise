@@ -17,15 +17,12 @@ import {
   Wallet,
   Eye,
   EyeOff,
-  ShieldCheck,
   QrCode,
   Copy,
   CheckCircle2,
   Lock,
   ArrowRight,
   Sparkles,
-  Download,
-  PlusCircle,
   FileCheck,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -42,7 +39,6 @@ export const WalletPage: React.FC = () => {
   const [nonce, setNonce] = useState<string>('');
   const [presentation, setPresentation] = useState<any | null>(null);
   const [showQrModal, setShowQrModal] = useState<boolean>(false);
-  const [generating, setGenerating] = useState<boolean>(false);
 
   useEffect(() => {
     // Load holders and seed credentials into IndexedDB if empty
@@ -102,7 +98,6 @@ export const WalletPage: React.FC = () => {
     nonceVal: string
   ) => {
     if (!cred) return;
-    setGenerating(true);
     try {
       const activeHolder = holders[selectedHolderIndex];
       const holderWallet = activeHolder
@@ -111,18 +106,24 @@ export const WalletPage: React.FC = () => {
 
       const fieldsToReveal = Object.keys(revealMap).filter((k) => revealMap[k]);
 
-      const pres = await createPresentation({
-        credential: cred,
-        holderWallet,
-        revealedFields: fieldsToReveal,
-        nonce: nonceVal || hexlify(randomBytes(16)),
-      });
+      // Adapt cred format if missing salts/leaves
+      const normalizedCred = {
+        ...cred,
+        salts: cred.salts || cred.fieldSalts || {},
+        leaves: cred.leaves || {},
+        merkleRoot: cred.merkleRoot || cred.merkleProof?.root || '0x' + '00'.repeat(32),
+      };
+
+      const pres = await createPresentation(
+        normalizedCred,
+        fieldsToReveal,
+        nonceVal || hexlify(randomBytes(16)),
+        holderWallet
+      );
 
       setPresentation(pres);
     } catch (err: any) {
       console.warn('Presentation creation error:', err);
-    } finally {
-      setGenerating(false);
     }
   };
 
@@ -134,11 +135,6 @@ export const WalletPage: React.FC = () => {
     const jsonStr = JSON.stringify(presentation);
     sessionStorage.setItem('trustmesh_pending_presentation', jsonStr);
     navigate(`/verifier?sample=presentation`);
-  };
-
-  const currentHolder = holders[selectedHolderIndex] || {
-    name: 'Alice Sharma (Alumni)',
-    did: 'did:pkh:eip155:31337:0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
   };
 
   return (

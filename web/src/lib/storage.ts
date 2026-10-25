@@ -1,6 +1,11 @@
 import { openDB, DBSchema } from 'idb';
 import { Credential, Snapshot } from '@shared/types';
 
+export interface CredentialRecord {
+  id: string;
+  credential: Credential;
+}
+
 interface TrustMeshDB extends DBSchema {
   credentials: {
     key: string;
@@ -54,6 +59,16 @@ export async function deleteWalletCredential(id: string): Promise<void> {
   await db.delete('credentials', id);
 }
 
+// Convenience Aliases for Wallet
+export async function saveCredential(credential: Credential): Promise<void> {
+  return saveCredentialToWallet(credential);
+}
+
+export async function getCredentials(): Promise<CredentialRecord[]> {
+  const creds = await getWalletCredentials();
+  return creds.map((c) => ({ id: c.id, credential: c }));
+}
+
 // Snapshot Storage (Offline Mode)
 export async function saveOfflineSnapshot(snapshot: Snapshot): Promise<void> {
   const db = await getDB();
@@ -68,6 +83,31 @@ export async function getOfflineSnapshot(): Promise<{ snapshot: Snapshot; cached
   const db = await getDB();
   const entry = await db.get('snapshots', 'latest');
   return entry ?? null;
+}
+
+export async function saveSnapshot(snapshot: Snapshot): Promise<void> {
+  return saveOfflineSnapshot(snapshot);
+}
+
+export async function getLatestSnapshot(): Promise<Snapshot | null> {
+  const entry = await getOfflineSnapshot();
+  return entry ? entry.snapshot : null;
+}
+
+// Simulated Clock & Settings
+export async function getSimulatedClockOffset(): Promise<number> {
+  return getSetting<number>('simulated_clock_offset_hours', 0);
+}
+
+export async function setSimulatedClockOffset(hours: number): Promise<void> {
+  return setSetting<number>('simulated_clock_offset_hours', hours);
+}
+
+export async function clearStorage(): Promise<void> {
+  const db = await getDB();
+  await db.clear('credentials');
+  await db.clear('snapshots');
+  await db.clear('settings');
 }
 
 // Settings Storage

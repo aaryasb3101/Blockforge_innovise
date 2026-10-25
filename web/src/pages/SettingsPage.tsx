@@ -10,14 +10,11 @@ import {
 import { clearStorage } from '../lib/storage';
 import {
   Settings,
-  Server,
   Activity,
   Trash2,
-  CheckCircle2,
   RefreshCw,
   Sun,
   Moon,
-  ExternalLink,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 

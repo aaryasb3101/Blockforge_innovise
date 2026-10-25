@@ -14,9 +14,6 @@ import {
   registerInstitutionBackend,
   approveInstitutionBackend,
   updateInstitutionStatusBackend,
-  AppConfig,
-  fetchConfig,
-  FALLBACK_CONFIG,
 } from '../lib/api';
 import {
   Network,
@@ -26,11 +23,8 @@ import {
   Key,
   ShieldCheck,
   CheckCircle2,
-  AlertTriangle,
   Lock,
-  Layers,
   ChevronRight,
-  UserCheck,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -51,7 +45,6 @@ export const RegistryPage: React.FC = () => {
   const [registeredId, setRegisteredId] = useState<string>('');
   const [regTx1, setRegTx1] = useState<string>('');
   const [regTx2, setRegTx2] = useState<string>('');
-  const [regTx3, setRegTx3] = useState<string>('');
   const [regLoading, setRegLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -153,8 +146,7 @@ export const RegistryPage: React.FC = () => {
   const handleStep3Approve2 = async () => {
     setRegLoading(true);
     try {
-      const res = await approveInstitutionBackend(registeredId, 1);
-      setRegTx3(res.txHash);
+      await approveInstitutionBackend(registeredId, 1);
       setRegisterStep(4);
       toast.success('Accreditor Beta (idx-1) approved! Institution is now ACTIVE ✔');
       loadRegistry();
@@ -170,7 +162,7 @@ export const RegistryPage: React.FC = () => {
     action: 'suspend' | 'reinstate' | 'revoke'
   ) => {
     try {
-      const res = await updateInstitutionStatusBackend(instId, action);
+      await updateInstitutionStatusBackend(instId, action);
       toast.success(`Institution status updated: ${action.toUpperCase()}`);
       loadRegistry();
     } catch (err: any) {

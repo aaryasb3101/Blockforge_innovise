@@ -34,15 +34,15 @@ export const TrustGauge: React.FC<TrustGaugeProps> = ({
   let textColor = 'text-emerald-400';
   let bgGlow = 'rgba(16, 185, 129, 0.2)';
 
-  if (verdict === Verdict.VALID_WITH_WARNINGS) {
+  if (verdict === 'VALID_WITH_WARNINGS') {
     strokeColor = '#f59e0b'; // trust-warning
     textColor = 'text-amber-400';
     bgGlow = 'rgba(245, 158, 11, 0.2)';
-  } else if (verdict === Verdict.SUSPICIOUS) {
+  } else if (verdict === 'SUSPICIOUS') {
     strokeColor = '#f97316'; // trust-suspicious
     textColor = 'text-orange-400';
     bgGlow = 'rgba(249, 115, 22, 0.2)';
-  } else if (verdict === Verdict.INVALID) {
+  } else if (verdict === 'INVALID') {
     strokeColor = '#ef4444'; // trust-invalid
     textColor = 'text-rose-500';
     bgGlow = 'rgba(239, 68, 68, 0.2)';

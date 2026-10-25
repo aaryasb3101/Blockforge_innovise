@@ -12,27 +12,17 @@ import {
   getSimulatedClockOffset,
   setSimulatedClockOffset,
 } from '../lib/storage';
-import { Snapshot, VerificationResult, Verdict } from '@shared/types';
-import { TrustGauge } from '../components/TrustGauge';
+import { Snapshot, VerificationResult } from '@shared/types';
 import {
   WifiOff,
-  Wifi,
   Download,
   UploadCloud,
-  CheckCircle2,
-  AlertTriangle,
-  XCircle,
   Clock,
-  Sliders,
-  ShieldCheck,
-  Database,
-  ArrowRight,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const OfflinePage: React.FC = () => {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
-  const [offlineModeActive, setOfflineModeActive] = useState<boolean>(true);
   const [clockOffsetHours, setClockOffsetHours] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -52,12 +42,10 @@ export const OfflinePage: React.FC = () => {
 
   const loadCachedSnapshot = async () => {
     try {
-      // First try IndexedDB
       const cached = await getLatestSnapshot();
       if (cached) {
         setSnapshot(cached);
       } else {
-        // If empty, fetch from backend and cache
         const fresh = await fetchSnapshot();
         await saveSnapshot(fresh);
         setSnapshot(fresh);
@@ -101,9 +89,9 @@ export const OfflinePage: React.FC = () => {
 
   // Freshness calculation
   const getFreshness = () => {
-    if (!snapshot) return { status: 'UNKNOWN', label: 'No Snapshot', color: 'gray' };
+    if (!snapshot) return { status: 'UNKNOWN', label: 'No Snapshot', color: 'gray', badge: 'bg-surface-base text-surface-muted' };
     const simulatedNow = Math.floor(Date.now() / 1000) + clockOffsetHours * 3600;
-    const ageSeconds = simulatedNow - snapshot.generatedAt;
+    const ageSeconds = simulatedNow - snapshot.timestamp;
     const hoursOld = ageSeconds / 3600;
 
     if (hoursOld < 1) {
@@ -235,7 +223,7 @@ export const OfflinePage: React.FC = () => {
             <div className="flex justify-between">
               <span className="text-surface-muted">Cached Institutions:</span>
               <span className="text-surface-text">
-                {snapshot?.chainState?.institutions?.length || 3}
+                {snapshot?.institutions?.length || 3}
               </span>
             </div>
           </div>
@@ -348,9 +336,9 @@ export const OfflinePage: React.FC = () => {
             {offlineResult ? (
               <div
                 className={`rounded-2xl border p-5 space-y-3 ${
-                  offlineResult.verdict === Verdict.VALID
+                  offlineResult.verdict === 'VALID'
                     ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
-                    : offlineResult.verdict === Verdict.VALID_WITH_WARNINGS
+                    : offlineResult.verdict === 'VALID_WITH_WARNINGS'
                     ? 'border-amber-500/30 bg-amber-500/10 text-amber-400'
                     : 'border-rose-500/30 bg-rose-500/10 text-rose-400'
                 }`}
@@ -371,10 +359,10 @@ export const OfflinePage: React.FC = () => {
                   <div className="font-bold">Rule Evaluations:</div>
                   {offlineResult.rules.map((r) => (
                     <div
-                      key={r.ruleId}
+                      key={r.id}
                       className="flex justify-between font-mono text-[11px]"
                     >
-                      <span>{r.ruleId}</span>
+                      <span>{r.id}</span>
                       <span className="font-bold">{r.status}</span>
                     </div>
                   ))}

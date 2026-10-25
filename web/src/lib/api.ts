@@ -2,11 +2,10 @@ import {
   Credential,
   Presentation,
   VerificationResult,
-  VerifyOptions,
+  VerificationOptions,
   Snapshot,
   InstitutionStatus,
   KeyStatus,
-  RuleId,
 } from '@shared/types';
 import {
   verify as coreVerify,
@@ -21,10 +20,9 @@ import {
   fromVerifiableCredential as coreFromVC,
   computeBlastRadius as coreComputeBlastRadius,
   ATTACKS as coreAttacks,
-  AttackContext,
   AttackOutcome,
 } from '@core';
-import { JsonRpcProvider, Wallet, keccak256, toUtf8Bytes, ZeroAddress } from 'ethers';
+import { JsonRpcProvider, Wallet, keccak256, toUtf8Bytes, getBytes } from 'ethers';
 
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || 'http://localhost:8787';
@@ -156,7 +154,7 @@ export async function fetchDemoSamples(): Promise<Record<string, any>> {
   const batchSample = await coreIssueBatch({
     issuerWallet,
     issuerDid: 'did:trustmesh:iit-bombay',
-    credentials: [
+    items: [
       {
         holderDid,
         schema: 'DegreeCredential',
@@ -193,11 +191,11 @@ export async function fetchDemoSamples(): Promise<Record<string, any>> {
     },
     'compromised-before': {
       ...validSample,
-      issuanceDate: Math.floor(Date.now() / 1000) - 7200, // 2 hours ago
+      issuanceDate: Math.floor(Date.now() / 1000) - 7200,
     },
     'compromised-after': {
       ...validSample,
-      issuanceDate: Math.floor(Date.now() / 1000) + 7200, // after compromise
+      issuanceDate: Math.floor(Date.now() / 1000) + 7200,
     },
     batch: batchSample.credentials[0],
   };
@@ -280,7 +278,6 @@ export async function fetchAuditEvents(query?: string): Promise<any[]> {
   } catch {
     // Continue
   }
-  // Fallback audit events
   return [
     {
       id: 1,
@@ -367,37 +364,42 @@ export async function fetchSnapshot(): Promise<Snapshot> {
     '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
   );
   const now = Math.floor(Date.now() / 1000);
-  const payload = {
-    version: 1,
-    generatedAt: now,
-    expiresAt: now + 3600 * 24,
-    chainState: {
-      institutions: [
-        {
-          id: '0x76b2eb2bdfa57b010c28340d2562be64e0ad29676e65a58e80556778f654f5fc',
-          did: 'did:trustmesh:iit-bombay',
-          status: InstitutionStatus.Active,
-          keys: [
-            {
-              keyAddress: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-              status: KeyStatus.Active,
-              validFrom: 1700000000,
-              compromisedAt: 0,
-            },
-          ],
-        },
-      ],
-      anchors: [],
-      revocations: [],
-    },
+  const payloadData = {
+    version: 1 as const,
+    chainId: 31337,
+    registry: FALLBACK_CONFIG.registry,
+    blockNumber: 12510,
+    timestamp: now,
+    institutions: [
+      {
+        id: '0x76b2eb2bdfa57b010c28340d2562be64e0ad29676e65a58e80556778f654f5fc',
+        did: 'did:trustmesh:iit-bombay',
+        admin: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+        status: InstitutionStatus.Active,
+      },
+    ],
+    keys: [
+      {
+        addr: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+        institutionId:
+          '0x76b2eb2bdfa57b010c28340d2562be64e0ad29676e65a58e80556778f654f5fc',
+        status: KeyStatus.Active,
+        validFrom: 1700000000,
+        compromisedAt: 0,
+      },
+    ],
+    anchors: [],
+    batches: [],
+    statuses: [],
+    publisher: publisher.address,
   };
-  const sig = await publisher.signMessage(JSON.stringify(payload));
+
+  const digest = keccak256(toUtf8Bytes(JSON.stringify(payloadData)));
+  const sig = await publisher.signMessage(getBytes(digest));
+
   return {
-    ...payload,
-    signature: {
-      publisherAddress: publisher.address,
-      sig,
-    },
+    ...payloadData,
+    signature: sig,
   };
 }
 
@@ -414,8 +416,16 @@ export async function publishSnapshotOnChain(): Promise<{
     // Fallback simulation
   }
   return {
-    txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
-    snapshotHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+    txHash:
+      '0x' +
+      Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(
+        ''
+      ),
+    snapshotHash:
+      '0x' +
+      Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(
+        ''
+      ),
   };
 }
 
@@ -451,12 +461,12 @@ export async function runAttack(id: string): Promise<AttackOutcome> {
   if (!attack) throw new Error(`Unknown attack ${id}`);
 
   const provider = new JsonRpcProvider(DEFAULT_RPC_URL);
-  const accreditors: [Wallet, Wallet, Wallet] = [
+  const accreditors: any = [
     Wallet.createRandom(provider),
     Wallet.createRandom(provider),
     Wallet.createRandom(provider),
   ];
-  const rogue = {
+  const rogue: any = {
     did: 'did:trustmesh:rogue',
     key: Wallet.createRandom(provider),
   };
@@ -471,7 +481,7 @@ export async function runAttack(id: string): Promise<AttackOutcome> {
       snapshotPublisher: Wallet.createRandom(provider),
     },
     newFundedWallet: async () => Wallet.createRandom(provider),
-  });
+  } as any);
 
   return outcome;
 }
@@ -570,8 +580,12 @@ export async function issueCredentialBackend(params: {
 
   return {
     credential: cred,
-    txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
-    merkleRoot: cred.merkleProof.root,
+    txHash:
+      '0x' +
+      Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(
+        ''
+      ),
+    merkleRoot: cred.merkleRoot,
   };
 }
 
@@ -606,14 +620,18 @@ export async function issueBatchBackend(params: {
   const batch = await coreIssueBatch({
     issuerWallet: wallet,
     issuerDid: 'did:trustmesh:iit-bombay',
-    credentials: params.rows,
+    items: params.rows,
   });
 
   return {
     credentials: batch.credentials,
-    merkleRoot: batch.root,
-    batchId: 'batch-' + Date.now(),
-    txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+    merkleRoot: batch.batchRoot,
+    batchId: batch.batchId,
+    txHash:
+      '0x' +
+      Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(
+        ''
+      ),
   };
 }
 
@@ -666,12 +684,7 @@ export async function reinstateCredentialBackend(
   return await res.json();
 }
 
-/**
- * Demonstrates unauthorized cross-institution revocation triggering on-chain revert
- * and throwing custom error `NotIssuerOfCredential(bytes32 credId, bytes32 callerId, bytes32 issuerId)`
- */
 export async function tryRevokeAsRogue(credentialId: string): Promise<never> {
-  // Try sending through backend with rogue acting institution ID
   const rogueInstId = keccak256(toUtf8Bytes('did:trustmesh:rogue-diploma-mill'));
   try {
     const res = await fetch(`${API_BASE_URL}/api/revoke`, {
@@ -873,7 +886,7 @@ export async function executeRecoveryBackend(proposalId: string): Promise<{ txHa
 
 export async function verifyWithBackend(
   input: Credential | Presentation,
-  opts?: VerifyOptions
+  opts?: VerificationOptions
 ): Promise<VerificationResult> {
   const res = await fetch(`${API_BASE_URL}/api/verify`, {
     method: 'POST',
@@ -891,7 +904,7 @@ export async function verifyWithBrowser(
   input: Credential | Presentation,
   rpcUrl: string,
   registryAddress: string,
-  opts?: VerifyOptions
+  opts?: VerificationOptions
 ): Promise<VerificationResult> {
   const provider = new JsonRpcProvider(rpcUrl);
   const source = new OnChainSource(provider, registryAddress);
@@ -902,7 +915,7 @@ export async function verifyWithSnapshot(
   input: Credential | Presentation,
   snapshot: Snapshot,
   trustedPublisher: string,
-  opts?: VerifyOptions
+  opts?: VerificationOptions
 ): Promise<VerificationResult> {
   const source = new SnapshotSource(snapshot, trustedPublisher);
   return await coreVerify(input, source, opts);

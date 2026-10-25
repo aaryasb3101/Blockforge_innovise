@@ -3,23 +3,18 @@ import { useSearchParams } from 'react-router-dom';
 import {
   fetchAttacks,
   runAttack,
-  ATTACKS,
   verifyWithBrowser,
   FALLBACK_CONFIG,
   fetchDemoSamples,
 } from '../lib/api';
-import { AttackOutcome } from '@core';
+import { AttackOutcome } from '@shared/types';
 import {
   Skull,
   Play,
-  RotateCcw,
   CheckCircle2,
   XCircle,
-  ShieldAlert,
   Flame,
   Share2,
-  Copy,
-  ExternalLink,
   Code2,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -61,7 +56,7 @@ export const PlaygroundPage: React.FC = () => {
       const outcome = await runAttack(attackId);
       setOutcomes((prev) => ({ ...prev, [attackId]: outcome }));
       if (outcome.blocked) {
-        toast.success(`Attack blocked by ${outcome.caughtBy || 'Core Rules'}`);
+        toast.success(`Attack blocked by ${outcome.caughtBy?.join(', ') || 'Core Rules'}`);
       } else {
         toast.error(`Attack was NOT blocked!`);
       }
@@ -120,9 +115,7 @@ export const PlaygroundPage: React.FC = () => {
     }
   };
 
-  // Scoreboard calculation
   const blockedCount = Object.values(outcomes).filter((o) => o.blocked).length;
-  const totalRan = Object.keys(outcomes).length;
 
   return (
     <div className="space-y-8 pb-16">
@@ -238,16 +231,16 @@ export const PlaygroundPage: React.FC = () => {
                 <div className="text-[11px] font-sans text-surface-text pt-2 border-t border-current/20 space-y-1">
                   <div className="font-bold">Failed Rules:</div>
                   {sandboxResult.rules
-                    .filter((r: any) => r.status === 'FAIL')
+                    .filter((r: any) => r.status === 'fail')
                     .map((r: any) => (
                       <div
-                        key={r.ruleId}
+                        key={r.id}
                         className="rounded bg-black/30 p-1.5 font-mono text-xs text-rose-300"
                       >
-                        {r.ruleId}: {r.reason}
+                        {r.id}: {r.reason}
                       </div>
                     ))}
-                  {sandboxResult.rules.filter((r: any) => r.status === 'FAIL').length ===
+                  {sandboxResult.rules.filter((r: any) => r.status === 'fail').length ===
                     0 && (
                     <div className="text-emerald-300">
                       No rules failed. Payload is authentic.
@@ -322,10 +315,10 @@ export const PlaygroundPage: React.FC = () => {
                   {outcome && (
                     <div className="rounded-xl bg-surface-base p-2 text-[10px] font-mono space-y-0.5 border border-surface-border">
                       <div className="text-surface-muted">
-                        Caught By: <span className="text-surface-text">{outcome.caughtBy}</span>
+                        Caught By: <span className="text-surface-text">{outcome.caughtBy?.join(', ')}</span>
                       </div>
                       <div className="text-surface-muted">
-                        Verdict: <span className="text-rose-400 font-bold">{outcome.verdict}</span>
+                        Verdict: <span className="text-rose-400 font-bold">{outcome.verification?.verdict || 'BLOCKED'}</span>
                       </div>
                     </div>
                   )}

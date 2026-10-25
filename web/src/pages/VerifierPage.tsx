@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   VerificationResult,
-  Verdict,
-  RuleEvaluation,
-  RuleStatus,
 } from '@shared/types';
 import {
   verifyWithBackend,
@@ -26,8 +23,6 @@ import {
   AlertTriangle,
   AlertOctagon,
   XCircle,
-  Clock,
-  Layers,
   ChevronDown,
   ChevronUp,
   RotateCcw,
@@ -35,8 +30,6 @@ import {
   Camera,
   Download,
   Copy,
-  ExternalLink,
-  Sliders,
   Check,
   ArrowRightLeft,
 } from 'lucide-react';
@@ -82,7 +75,6 @@ export const VerifierPage: React.FC = () => {
     if (cred) {
       setRawInput(JSON.stringify(cred, null, 2));
       toast.success(`Loaded sample: ${key}`);
-      // Auto run verify on sample selection for instant feedback
       setTimeout(() => {
         handleVerify(JSON.stringify(cred, null, 2));
       }, 50);
@@ -148,7 +140,6 @@ export const VerifierPage: React.FC = () => {
 
     try {
       if (compareEngines) {
-        // Run both engines side-by-side
         const [backRes, browRes] = await Promise.allSettled([
           verifyWithBackend(parsed, opts),
           verifyWithBrowser(parsed, config.rpcUrl, config.registry, opts),
@@ -412,11 +403,11 @@ export const VerifierPage: React.FC = () => {
               {/* Massive Verdict Banner */}
               <div
                 className={`rounded-3xl border p-6 shadow-xl transition-all ${
-                  result.verdict === Verdict.VALID
+                  result.verdict === 'VALID'
                     ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
-                    : result.verdict === Verdict.VALID_WITH_WARNINGS
+                    : result.verdict === 'VALID_WITH_WARNINGS'
                     ? 'border-amber-500/40 bg-amber-500/10 text-amber-400'
-                    : result.verdict === Verdict.SUSPICIOUS
+                    : result.verdict === 'SUSPICIOUS'
                     ? 'border-orange-500/40 bg-orange-500/10 text-orange-400'
                     : 'border-rose-500/40 bg-rose-500/10 text-rose-500'
                 }`}
@@ -430,11 +421,11 @@ export const VerifierPage: React.FC = () => {
                       {result.verdict}
                     </h2>
                   </div>
-                  {result.verdict === Verdict.VALID ? (
+                  {result.verdict === 'VALID' ? (
                     <CheckCircle2 className="h-10 w-10 text-emerald-400" />
-                  ) : result.verdict === Verdict.VALID_WITH_WARNINGS ? (
+                  ) : result.verdict === 'VALID_WITH_WARNINGS' ? (
                     <AlertTriangle className="h-10 w-10 text-amber-400" />
-                  ) : result.verdict === Verdict.SUSPICIOUS ? (
+                  ) : result.verdict === 'SUSPICIOUS' ? (
                     <AlertOctagon className="h-10 w-10 text-orange-400" />
                   ) : (
                     <XCircle className="h-10 w-10 text-rose-500" />
@@ -442,11 +433,11 @@ export const VerifierPage: React.FC = () => {
                 </div>
 
                 <p className="mt-3 text-xs leading-relaxed opacity-90 text-surface-text">
-                  {result.verdict === Verdict.VALID
+                  {result.verdict === 'VALID'
                     ? 'All 10 cryptographic constraints satisfied. Signer key is authorized by accredited institution, Merkle root is anchored on-chain, and no revocation is recorded.'
-                    : result.verdict === Verdict.VALID_WITH_WARNINGS
+                    : result.verdict === 'VALID_WITH_WARNINGS'
                     ? 'Credential is valid but non-fatal warnings were detected (e.g. credential near expiration date or historical key rotation).'
-                    : result.verdict === Verdict.SUSPICIOUS
+                    : result.verdict === 'SUSPICIOUS'
                     ? 'Suspicious activity detected! Signer key was reported compromised around issuance timestamp.'
                     : 'Credential verification failed. One or more mandatory cryptographic rules failed (tampered data, rogue issuer, or active revocation).'}
                 </p>
@@ -526,35 +517,35 @@ export const VerifierPage: React.FC = () => {
               </p>
             </div>
             <span className="text-xs font-mono text-surface-muted">
-              {result.rules.filter((r) => r.status === RuleStatus.PASS).length}/
+              {result.rules.filter((r) => r.status === 'pass').length}/
               {result.rules.length} Rules Passed
             </span>
           </div>
 
           <div className="divide-y divide-surface-border">
             {result.rules.map((rule) => {
-              const isExpanded = expandedRules[rule.ruleId];
+              const isExpanded = expandedRules[rule.id];
               return (
-                <div key={rule.ruleId} className="py-3.5 space-y-2">
+                <div key={rule.id} className="py-3.5 space-y-2">
                   <div
-                    onClick={() => toggleRuleExpand(rule.ruleId)}
+                    onClick={() => toggleRuleExpand(rule.id)}
                     className="flex items-center justify-between cursor-pointer group"
                   >
                     <div className="flex items-center space-x-3">
                       <div
                         className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-mono font-bold ${
-                          rule.status === RuleStatus.PASS
+                          rule.status === 'pass'
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                            : rule.status === RuleStatus.WARN
+                            : rule.status === 'warn'
                             ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                            : rule.status === RuleStatus.FAIL
+                            : rule.status === 'fail'
                             ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
                             : 'bg-surface-base text-surface-muted'
                         }`}
                       >
-                        {rule.status === RuleStatus.PASS ? (
+                        {rule.status === 'pass' ? (
                           <Check className="h-4 w-4" />
-                        ) : rule.status === RuleStatus.FAIL ? (
+                        ) : rule.status === 'fail' ? (
                           <XCircle className="h-4 w-4" />
                         ) : (
                           <AlertTriangle className="h-4 w-4" />
@@ -564,7 +555,7 @@ export const VerifierPage: React.FC = () => {
                       <div>
                         <div className="flex items-center space-x-2">
                           <span className="font-mono text-xs font-bold text-surface-text">
-                            {rule.ruleId}
+                            {rule.id}
                           </span>
                           <span className="text-xs text-surface-muted font-sans">
                             {rule.reason}
@@ -576,11 +567,11 @@ export const VerifierPage: React.FC = () => {
                     <div className="flex items-center space-x-3">
                       <span
                         className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-bold uppercase ${
-                          rule.status === RuleStatus.PASS
+                          rule.status === 'pass'
                             ? 'bg-emerald-500/10 text-emerald-400'
-                            : rule.status === RuleStatus.WARN
+                            : rule.status === 'warn'
                             ? 'bg-amber-500/10 text-amber-400'
-                            : rule.status === RuleStatus.FAIL
+                            : rule.status === 'fail'
                             ? 'bg-rose-500/10 text-rose-400'
                             : 'bg-surface-base text-surface-muted'
                         }`}

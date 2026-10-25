@@ -662,7 +662,7 @@ export const IssuerPage: React.FC = () => {
                     Anchored Merkle Root
                   </span>
                   <span className="text-surface-text break-all">
-                    {issuedCred?.merkleProof?.root || issuedBatch?.merkleRoot}
+                    {issuedCred?.merkleRoot || issuedBatch?.merkleRoot}
                   </span>
                 </div>
               </div>

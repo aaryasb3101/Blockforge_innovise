@@ -1,15 +1,11 @@
 import React from 'react';
-import { VerificationResult, Verdict } from '@shared/types';
+import { VerificationResult } from '@shared/types';
 import { QRCodeSVG } from 'qrcode.react';
 import {
   X,
   Printer,
   Download,
   Copy,
-  CheckCircle2,
-  AlertTriangle,
-  AlertOctagon,
-  XCircle,
   ShieldCheck,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -40,7 +36,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
     credentialId: credentialData?.id || 'N/A',
     schema: credentialData?.schema || 'DegreeCredential',
     issuerDid: credentialData?.issuerDid || 'N/A',
-    merkleRoot: credentialData?.merkleProof?.root || 'N/A',
+    merkleRoot: credentialData?.merkleRoot || credentialData?.merkleProof?.root || 'N/A',
     rules: result.rules,
   };
 
@@ -108,11 +104,11 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
           {/* Verdict Banner */}
           <div
             className={`flex items-center justify-between p-4 rounded-xl border ${
-              result.verdict === Verdict.VALID
+              result.verdict === 'VALID'
                 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                : result.verdict === Verdict.VALID_WITH_WARNINGS
+                : result.verdict === 'VALID_WITH_WARNINGS'
                 ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                : result.verdict === Verdict.SUSPICIOUS
+                : result.verdict === 'SUSPICIOUS'
                 ? 'bg-orange-500/10 border-orange-500/30 text-orange-400'
                 : 'bg-rose-500/10 border-rose-500/30 text-rose-500'
             }`}
@@ -167,7 +163,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                 Merkle Root
               </span>
               <span className="text-surface-text break-all">
-                {credentialData?.merkleProof?.root || 'N/A'}
+                {credentialData?.merkleRoot || credentialData?.merkleProof?.root || 'N/A'}
               </span>
             </div>
           </div>
@@ -180,22 +176,22 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
             <div className="divide-y divide-surface-border rounded-xl border border-surface-border bg-surface-card overflow-hidden">
               {result.rules.map((rule) => (
                 <div
-                  key={rule.ruleId}
+                  key={rule.id}
                   className="flex items-center justify-between px-3 py-2 text-[11px]"
                 >
                   <div className="flex items-center space-x-2">
                     <span className="font-mono font-bold text-surface-text">
-                      {rule.ruleId}
+                      {rule.id}
                     </span>
                     <span className="text-surface-muted">{rule.reason}</span>
                   </div>
                   <span
                     className={`font-mono font-bold uppercase text-[10px] px-2 py-0.5 rounded ${
-                      rule.status === 'PASS'
+                      rule.status === 'pass'
                         ? 'bg-emerald-500/10 text-emerald-400'
-                        : rule.status === 'WARN'
+                        : rule.status === 'warn'
                         ? 'bg-amber-500/10 text-amber-400'
-                        : rule.status === 'FAIL'
+                        : rule.status === 'fail'
                         ? 'bg-rose-500/10 text-rose-400'
                         : 'bg-surface-base text-surface-muted'
                     }`}
