@@ -18,6 +18,7 @@ import { snapshotRoutes } from './routes/snapshot.js';
 import { attacksRoutes } from './routes/attacks.js';
 import { trustGraphRoutes } from './routes/trustGraph.js';
 import { statsRoutes } from './routes/stats.js';
+import { consensusRoutes } from './routes/consensus.js';
 
 export async function buildServer(): Promise<FastifyInstance> {
   const server = Fastify({
@@ -97,6 +98,7 @@ export async function buildServer(): Promise<FastifyInstance> {
   await server.register(attacksRoutes);
   await server.register(trustGraphRoutes);
   await server.register(statsRoutes);
+  await server.register(consensusRoutes);
 
   return server;
 }

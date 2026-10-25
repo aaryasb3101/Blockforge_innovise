@@ -927,6 +927,122 @@ export async function verifyWithSnapshot(
 }
 
 // ----------------------------------------------------------------------------
+// Real Consensus & Validator Network API Client
+// ----------------------------------------------------------------------------
+
+export async function fetchConsensusStatus(): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/status`);
+  if (!res.ok) throw new Error('Failed to fetch consensus status');
+  return await res.json();
+}
+
+export async function submitConsensusTx(params?: {
+  from?: string;
+  to?: string;
+  amount?: number;
+  payload?: string;
+}): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/tx`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params || {}),
+  });
+  if (!res.ok) throw new Error('Failed to submit consensus transaction');
+  return await res.json();
+}
+
+export async function submitConsensusBatch(count: number = 10): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/tx/batch`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ count }),
+  });
+  if (!res.ok) throw new Error('Failed to submit batch transactions');
+  return await res.json();
+}
+
+export async function stepConsensusRound(): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/step`, {
+    method: 'POST',
+  });
+  if (!res.ok) throw new Error('Failed to step consensus round');
+  return await res.json();
+}
+
+export async function updateValidatorStatus(id: string, status: string): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/node/${id}/status`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) throw new Error('Failed to update validator status');
+  return await res.json();
+}
+
+export async function updateConsensusDisruptions(
+  latencyMs: number,
+  packetLossPercent: number
+): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/disruptions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ latencyMs, packetLossPercent }),
+  });
+  if (!res.ok) throw new Error('Failed to update disruptions');
+  return await res.json();
+}
+
+export async function applyConsensusPreset(preset: string): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/preset`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ preset }),
+  });
+  if (!res.ok) throw new Error('Failed to apply preset');
+  return await res.json();
+}
+
+export async function syncValidatorNode(id: string): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/node/${id}/sync`, {
+    method: 'POST',
+  });
+  if (!res.ok) throw new Error('Failed to sync validator node');
+  return await res.json();
+}
+
+export async function verifyLedgerConsistencyBackend(): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/verify-consistency`);
+  if (!res.ok) throw new Error('Failed to verify ledger consistency');
+  return await res.json();
+}
+
+export async function fetchConsensusMetrics(): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/metrics`);
+  if (!res.ok) throw new Error('Failed to fetch consensus metrics');
+  return await res.json();
+}
+
+export async function toggleConsensusAutoRun(enable?: boolean): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/toggle-autorun`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ enable }),
+  });
+  if (!res.ok) throw new Error('Failed to toggle autorun');
+  return await res.json();
+}
+
+export async function updateConsensusInterval(intervalMs: number): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/api/consensus/interval`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ intervalMs }),
+  });
+  if (!res.ok) throw new Error('Failed to update block interval');
+  return await res.json();
+}
+
+// ----------------------------------------------------------------------------
 // Core Function Re-exports for Web Pages
 // ----------------------------------------------------------------------------
 export {
@@ -943,3 +1059,4 @@ export {
   OnChainSource,
   SnapshotSource,
 };
+
