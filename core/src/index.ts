@@ -78,3 +78,10 @@ export {
   type AttackContext,
   type AttackOutcome,
 } from './attacks.js';
+
+// Optional Zero-Knowledge Predicate Module (Bonus)
+export {
+  createZkPredicateProof,
+  verifyZkPredicateProof,
+  type ZkPredicateProof,
+} from './zk.js';
